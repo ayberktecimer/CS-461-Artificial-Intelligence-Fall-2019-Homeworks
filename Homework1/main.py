@@ -13,8 +13,7 @@ for x in xList:
             }
             stateSpace.append(state)
 '''
-print("bengi git öğreniyor")
-def ifStateValid(state):
+def isStateValid(state):
     y = state['y']
     x = state['x']
     b = state['b']
@@ -35,7 +34,40 @@ initialState = {
     'isVisited': False
 }
 
+graph ={}
+def create_possible_edges(state,graph):
+    possible_nstate1 = {
+        'x': state['x'] -2 ,
+        'y': state['y'],
+        'b': 0 if state['b'] == 1 else 1
 
+    }
+
+    possible_nstate2 = {
+        'x': state['x'] ,
+        'y': state['y'] -2,
+        'b': 0 if state['b'] == 1 else 1
+    }
+
+    possible_nstate3 = {
+        'x': state['x'] -1,
+        'y': state['y'] -1,
+        'b': 0 if state['b'] == 1 else 1
+    }
+    valid_states = []
+    if isStateValid(possible_nstate1):
+         valid_states.append(possible_nstate1)
+
+    if isStateValid(possible_nstate2):
+        valid_states.append(possible_nstate2)
+
+    if isStateValid(possible_nstate3):
+        valid_states.append(possible_nstate3)
+
+    graph[str(len(graph))] = valid_states
+create_possible_edges(initialState,graph)
+
+print(graph)
 '''
 validSpaceState = []
 for state in stateSpace:
