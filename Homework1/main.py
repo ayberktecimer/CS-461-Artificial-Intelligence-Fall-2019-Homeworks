@@ -68,6 +68,16 @@ def create_possible_edges(state,graph):
 create_possible_edges(initialState,graph)
 
 print(graph)
+
+'''
+ilk yaptigimiz system yani her state ve transitioni bulup sonra valid olanlari filtreleyerek
+graph yaratmak ve o graph uzerinden bfs calistirmak
+
+initial stateden dinamik sekilde check ederek graphi olustur dfs kostur
+3 DEGIL 6
+GRAPHI OLUSTUR ERAY'S METHOD
+ERAY'S METHODA DFS AT
+'''
 '''
 validSpaceState = []
 for state in stateSpace:
