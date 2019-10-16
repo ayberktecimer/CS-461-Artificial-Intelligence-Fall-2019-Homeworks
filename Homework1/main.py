@@ -13,7 +13,7 @@ for x in xList:
             }
             stateSpace.append(state)
 '''
-
+print("bengi git öğreniyor")
 def ifStateValid(state):
     y = state['y']
     x = state['x']
