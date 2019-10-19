@@ -2,6 +2,7 @@ xList = [0, 1, 2, 3]
 yList = [0, 1, 2, 3]
 bList = [0, 1]
 stateSpace = []
+print('')
 '''i = 0
 for x in xList:
     for y in yList:
@@ -13,10 +14,19 @@ for x in xList:
             }
             stateSpace.append(state)
 '''
+class State:
+    def __init__(self, m, c, b,parent, child):
+        self.m = m
+        self.c = c
+        self.b = b
+        self.parent = parent
+        self.child = child
+
 def isStateValid(state):
     y = state['y']
     x = state['x']
     b = state['b']
+
     if y > x > 0:
         return False
     if 3 - y > 3 - x > 0:
