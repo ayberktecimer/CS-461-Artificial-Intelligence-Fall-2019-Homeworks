@@ -1,20 +1,4 @@
-xList = [0, 1, 2, 3]
-yList = [0, 1, 2, 3]
-bList = [0, 1]
-stateSpace = []
-print('')
-'''i = 0
-for x in xList:
-    for y in yList:
-        for b in bList:
-            state = {
-                'x': x,
-                'y': y,
-                'b': b
-            }
-            stateSpace.append(state)
-'''
-
+import queue
 
 class State:
     def __init__(self, m, c, b, parent, children):
@@ -66,55 +50,27 @@ class State:
     def __eq__(self, other):
         return self.m == other.m and self.c == other.c and self.b == other.b
 
+    def isStateGoal(self):
+        if self.m == 0 and self.c == 0 and self.b == 0:
+            return True
+        else:
+            return False
 
-initialState = {
-    'x': 3,
-    'y': 3,
-    'b': 1,
-    'isVisited': False
-}
 
-graph = {}
+initial_state = State(4,4,1,None,None)
 
-create_possible_edges(initialState, graph)
 
-print(graph)
-
-'''
-ilk yaptigimiz system yani her state ve transitioni bulup sonra valid olanlari filtreleyerek
-graph yaratmak ve o graph uzerinden bfs calistirmak
-
-initial stateden dinamik sekilde check ederek graphi olustur dfs kostur
-3 DEGIL 6
-GRAPHI OLUSTUR ERAY'S METHOD
-ERAY'S METHODA DFS AT
-'''
-'''
-validSpaceState = []
-for state in stateSpace:
-    if ifStateValid(state):
-        validSpaceState.append(state)
-'''
-
-'''
-def isTransitionValid(fromState, toState):
-    if fromState['b'] == toState['b']:
-        return False
-
-    beforeLeftCount = fromState['x'] + fromState['y']
-    afterLeftCount = toState['x'] + toState['y']
-
-    if abs(afterLeftCount - beforeLeftCount) > 2:
-        return False
-
-    return True
-'''
-
-'''
-for state1 in validSpaceState:
-    for state2 in validSpaceState:
-        if state1 != state2:
-            print(isTransitionValid(state1, state2), "from:", state1, "to:", state2)
-
-print(stateSpace)
-'''
+def bfs_tree_search(root):
+    bfs_queue = queue.Queue()
+    bfs_queue.put(root)
+    while not bfs_queue.empty():
+        current_state = bfs_queue.get()
+        if current_state.isStateGoal():
+            print('Solution Bulundu')
+        else:
+            '''
+            call create children function
+            '''
+            for child in current_state.children:
+                bfs_queue.put(child)
+    print('No Solution')
