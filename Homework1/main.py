@@ -59,26 +59,7 @@ class State:
             return False
 
 
-initialState = State(3, 3, 1, None, [])
-print("aaa")
-initialState.create_possible_edges()
-for each in initialState.children:
-    each.create_possible_edges()
-    print("M: ", each.m)
-    print("C: ", each.c)
-    print("B: ", each.b)
-    print("TRANSITIOOOON")
-    print()
-    for child in each.children:
-        print("M: ", child.m)
-        print("C: ", child.c)
-        print("B: ", child.b)
-        print("children: ", child.children)
-        print("transition over")
-
-initial_state = State(4, 4, 1, None, None)
-
-
+initial_state = State(4, 4, 1, None, [])
 def bfs_tree_search(root):
     bfs_queue = queue.Queue()
     bfs_queue.put(root)
@@ -86,10 +67,10 @@ def bfs_tree_search(root):
         current_state = bfs_queue.get()
         if current_state.isStateGoal():
             print('Solution Bulundu')
+            exit(0)
         else:
-            '''
-            call create children function
-            '''
+            current_state.create_possible_edges()
             for child in current_state.children:
                 bfs_queue.put(child)
     print('No Solution')
+bfs_tree_search(initial_state)
