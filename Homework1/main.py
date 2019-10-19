@@ -2,6 +2,9 @@ import queue
 
 
 class State:
+    total_missionaries = 3
+    total_cannibals = 3
+
     def __init__(self, m, c, b, parent, children):
         self.m = m
         self.c = c
@@ -29,18 +32,18 @@ class State:
                 self.children.append(child)
 
     def isStateValid(self):
-        y = self.c
-        x = self.m
+        c = self.c
+        m = self.m
         b = self.b
-        if y < 0 or y > 3 or x < 0 or x > 3:
+        if c < 0 or c > State.total_cannibals or m < 0 or m > State.total_missionaries:
             return False
-        if y > x > 0:
+        if c > m > 0:
             return False
-        if 3 - y > 3 - x > 0:
+        if State.total_cannibals - c > State.total_missionaries - m > 0:
             return False
-        if b == 1 and x == 0 and y == 0:
+        if b == 1 and m == 0 and c == 0:
             return False
-        if b == 0 and x == 3 and y == 3:
+        if b == 0 and m == State.total_missionaries and c == State.total_cannibals:
             return False
         return True
 
@@ -81,7 +84,6 @@ def bfs_tree_search(root):
     while not bfs_queue.empty():
         current_state = bfs_queue.get()
         if current_state.isStateGoal():
-            #print(current_state)
             print('Solution Bulundu')
             get_solution_path(current_state)
             exit(0)
