@@ -52,6 +52,9 @@ class State:
     def __eq__(self, other):
         return self.m == other.m and self.c == other.c and self.b == other.b
 
+    def __str__(self):
+        return str(self.m) +"M"+ str(self.c) + 'C' + str(self.b)
+
     def isStateGoal(self):
         if self.m == 0 and self.c == 0 and self.b == 0:
             return True
@@ -59,14 +62,28 @@ class State:
             return False
 
 
-initial_state = State(4, 4, 1, None, [])
+def get_solution_path(goal_state):
+    path = []
+    current_state = goal_state
+    while current_state is not None:
+        path.append(current_state)
+        current_state = current_state.parent
+    path = path[::-1]
+    for state in path:
+        print(state)
+
+initial_state = State(3, 3, 1, None, [])
+
+
 def bfs_tree_search(root):
     bfs_queue = queue.Queue()
     bfs_queue.put(root)
     while not bfs_queue.empty():
         current_state = bfs_queue.get()
         if current_state.isStateGoal():
+            #print(current_state)
             print('Solution Bulundu')
+            get_solution_path(current_state)
             exit(0)
         else:
             current_state.create_possible_edges()
