@@ -146,7 +146,7 @@ def bfs_tree_search(root):
         #v.draw_state(current_state)
         if current_state.isStateGoal():
             print('Found a Solution')
-            print('Solution Path is as follows:')
+            print('One of the solutions paths is as follows:')
             get_solution_path(current_state)
             isSolutionFound = True
             break
@@ -156,7 +156,7 @@ def bfs_tree_search(root):
                 bfs_queue.put(child)
 
     if not isSolutionFound:
-        print('No Solution')
+        print('No Solution is found by exhaustively searching list of possible paths\n')
 
 
 def pprint_tree(node, file=None, _prefix="", _last=True):
@@ -182,5 +182,6 @@ def print_tree(state, level=0):
 # Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
 bfs_tree_search(initial_state)
+print('Tree representing the search space done with Breadth First Search:')
 print_tree(initial_state)
 print(tree)
