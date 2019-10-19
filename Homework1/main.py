@@ -8,16 +8,15 @@ Emre Sülün
 Eray Şahin
 Kazım Ayberk Tecimer
 """
-
 import queue
-
 class State:
     total_missionaries = 4
     total_cannibals = 4
-    
+
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
+
     def __init__(self, m, c, b, parent, children):
         """
         Constructor
@@ -135,10 +134,14 @@ def bfs_tree_search(root):
     """
     bfs_queue = queue.Queue()
     bfs_queue.put(root)
+    #vısualızatıon
+    #v = Visualization()
 
     isSolutionFound = False
     while not bfs_queue.empty():
         current_state = bfs_queue.get()
+        #visualızation
+        #v.draw_state(current_state)
         if current_state.isStateGoal():
             print('Found a Solution')
             print('Solution Path is as follows:')
@@ -165,7 +168,6 @@ def pprint_tree(node, file=None, _prefix="", _last=True):
     for i, child in enumerate(node.children):
         _last = i == (child_count - 1)
         pprint_tree(child, file, _prefix, _last)
-
 
 # Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
