@@ -2,8 +2,9 @@ import queue
 
 
 class State:
-    total_missionaries = 4
-    total_cannibals = 4
+    total_missionaries = 3
+    total_cannibals = 3
+    
 
     def __init__(self, m, c, b, parent, children):
         self.m = m
@@ -11,6 +12,7 @@ class State:
         self.b = b
         self.parent = parent
         self.children = children
+        self.value = str(self.m) + "M " + str(self.c) + "C " + str(self.b) + "B"
 
     def create_possible_edges(self):
         possibleChildren = []
@@ -75,21 +77,37 @@ def get_solution_path(goal_state):
     for state in path:
         print(state)
 
-initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
-
-
 def bfs_tree_search(root):
     bfs_queue = queue.Queue()
     bfs_queue.put(root)
+    
+    isSolutionFound = False
     while not bfs_queue.empty():
         current_state = bfs_queue.get()
         if current_state.isStateGoal():
             print('Found a Solution')
             get_solution_path(current_state)
-            exit(0)
+            isSolutionFound = True
+            break
         else:
             current_state.create_possible_edges()
             for child in current_state.children:
                 bfs_queue.put(child)
-    print('No Solution')
+    
+    if not isSolutionFound:
+        print('No Solution')
+
+
+# Code adapted from https://vallentin.io/2016/11/29/pretty-print-tree 
+def pprint_tree(node, file=None, _prefix="", _last=True):
+    print(_prefix, "`- " if _last else "|---- ", node.value, sep="", file=file)
+    _prefix += "   " if _last else "|  "
+    child_count = len(node.children)
+    for i, child in enumerate(node.children):
+        _last = i == (child_count - 1)
+        pprint_tree(child, file, _prefix, _last)
+
+
+initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
 bfs_tree_search(initial_state)
+pprint_tree(initial_state)
