@@ -74,13 +74,16 @@ def get_solution_path(goal_state):
         path.append(current_state)
         current_state = current_state.parent
     path = path[::-1]
-    for state in path:
-        print(state)
+    for i in range(0,len(path)):
+        if i == len(path) - 1:
+            print(path[i])
+        else:
+            print(path[i],end=' -> ')
 
 def bfs_tree_search(root):
     bfs_queue = queue.Queue()
     bfs_queue.put(root)
-    
+
     isSolutionFound = False
     while not bfs_queue.empty():
         current_state = bfs_queue.get()
