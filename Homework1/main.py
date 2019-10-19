@@ -1,19 +1,33 @@
+"""
+Adahan Yalçınkaya
+Bengi Dönmez
+Emre Sülün
+Eray Şahin
+Kazım Ayberk Tecimer
+
+"""
 import queue
 
-
+"""
+This class represents the node in the graph. Each node corresponds to the state of the west coast.
+"""
 class State:
-    total_missionaries = 3
-    total_cannibals = 3
+    total_missionaries = 4
+    total_cannibals = 4
     
 
     def __init__(self, m, c, b, parent, children):
-        self.m = m
-        self.c = c
-        self.b = b
+        self.m = m  # Number of missionaries on the west coast
+        self.c = c  # Number of cannibal on the west coast
+        self.b = b  # Boats position( 1 if its on the west, 0 if its on the east)
         self.parent = parent
         self.children = children
         self.value = str(self.m) + "M " + str(self.c) + "C " + str(self.b) + "B"
 
+    """ 
+    This function creates possible children for current node.
+    
+    """
     def create_possible_edges(self):
         possibleChildren = []
         if self.b == 1:
@@ -33,6 +47,10 @@ class State:
             if child.isStateValid() and child.isLoopFree(self.parent):
                 self.children.append(child)
 
+    """
+    It also checks whether the possible chidren are in safe state (The number missionaries 
+    are greater or equal to number of cannibals in one side ).
+    """
     def isStateValid(self):
         c = self.c
         m = self.m
@@ -49,6 +67,9 @@ class State:
             return False
         return True
 
+    """
+     It does the loop checking 
+    """
     def isLoopFree(self, parent):
         if parent is None:
             return True
@@ -60,6 +81,9 @@ class State:
     def __str__(self):
         return str(self.m) +"M"+ str(self.c) + 'C' + str(self.b)
 
+    """
+    Checks the current state the goal state.
+    """
     def isStateGoal(self):
         if self.m == 0 and self.c == 0 and self.b == 0:
             return True
@@ -67,6 +91,9 @@ class State:
             return False
 
 
+"""
+This function prints the solution path if it exists.
+"""
 def get_solution_path(goal_state):
     path = []
     current_state = goal_state
@@ -80,6 +107,13 @@ def get_solution_path(goal_state):
         else:
             print(path[i],end=' -> ')
 
+
+"""
+This function applies BFS to the states by forming one element queue consisting only root node
+Until first state in the queue is the goal state or the queue becomes empty, it removes the
+first state in the queue and adds the children of the removed state on the rear of the queue.
+If the goal state is found it announce success otherwise it announce failiure.
+"""
 def bfs_tree_search(root):
     bfs_queue = queue.Queue()
     bfs_queue.put(root)
