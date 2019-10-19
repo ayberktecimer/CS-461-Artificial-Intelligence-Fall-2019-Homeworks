@@ -2,8 +2,8 @@ import queue
 
 
 class State:
-    total_missionaries = 4
-    total_cannibals = 4
+    total_missionaries = 3
+    total_cannibals = 3
 
     def __init__(self, m, c, b, parent, children):
         self.m = m
@@ -72,8 +72,11 @@ def get_solution_path(goal_state):
         path.append(current_state)
         current_state = current_state.parent
     path = path[::-1]
-    for state in path:
-        print(state)
+    for i in range(0,len(path)):
+        if i == len(path) - 1:
+            print(path[i])
+        else:
+            print(path[i],end=' -> ')
 
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
 
