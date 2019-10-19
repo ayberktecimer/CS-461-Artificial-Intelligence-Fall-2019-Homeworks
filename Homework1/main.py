@@ -1,5 +1,6 @@
 import queue
 
+
 class State:
     def __init__(self, m, c, b, parent, children):
         self.m = m
@@ -57,6 +58,7 @@ class State:
         else:
             return False
 
+
 initialState = State(3, 3, 1, None, [])
 print("aaa")
 initialState.create_possible_edges()
@@ -74,32 +76,7 @@ for each in initialState.children:
         print("children: ", child.children)
         print("transition over")
 
-
-
-
-'''
-ilk yaptigimiz system yani her state ve transitioni bulup sonra valid olanlari filtreleyerek
-graph yaratmak ve o graph uzerinden bfs calistirmak
-
-initial stateden dinamik sekilde check ederek graphi olustur dfs kostur
-3 DEGIL 6
-GRAPHI OLUSTUR ERAY'S METHOD
-ERAY'S METHODA DFS AT
-'''
-'''
-validSpaceState = []
-for state in stateSpace:
-    if ifStateValid(state):
-        validSpaceState.append(state)
-'''
-
-'''
-def isTransitionValid(fromState, toState):
-    if fromState['b'] == toState['b']:
-        return False
-
-
-initial_state = State(4,4,1,None,None)
+initial_state = State(4, 4, 1, None, None)
 
 
 def bfs_tree_search(root):
