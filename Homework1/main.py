@@ -1,6 +1,8 @@
-import queue
-
-
+xList = [0, 1, 2, 3]
+yList = [0, 1, 2, 3]
+bList = [0, 1]
+stateSpace = []
+print('')
 '''i = 0
 for x in xList:
     for y in yList:
@@ -12,80 +14,71 @@ for x in xList:
             }
             stateSpace.append(state)
 '''
+
+
 class State:
-    def __init__(self, m, c, b,parent, children):
+    def __init__(self, m, c, b, parent, children):
         self.m = m
         self.c = c
         self.b = b
         self.parent = parent
-        self.child = children
-    def isStateGoal(self):
-        if self.m == 0 and self.c == 0 and self.b == 0:
-            return True
+        self.children = children
+
+    def create_possible_edges(self):
+        possibleChildren = []
+        if self.b == 1:
+            possibleChildren.append(State(self.m - 2, self.c, 0, self, None))
+            possibleChildren.append(State(self.m, self.c - 2, 0, self, None))
+            possibleChildren.append(State(self.m - 1, self.c - 1, 0, self, None))
+            possibleChildren.append(State(self.m - 1, self.c, 0, self, None))
+            possibleChildren.append(State(self.m, self.c - 1, 0, self, None))
         else:
+            possibleChildren.append(State(self.m + 2, self.c, 1, self, None))
+            possibleChildren.append(State(self.m, self.c + 2, 1, self, None))
+            possibleChildren.append(State(self.m + 1, self.c + 1, 1, self, None))
+            possibleChildren.append(State(self.m + 1, self.c, 1, self, None))
+            possibleChildren.append(State(self.m, self.c + 1, 0, self, None))
+
+        for child in possibleChildren:
+            if child.isStateValid():
+                self.children.append(child)
+
+    def isStateValid(self):
+        y = self.c
+        x = self.m
+        b = self.b
+
+        if y > x > 0:
             return False
-initial_state = State(4,4,1,None,None)
-def isStateValid(state):
-    y = state['y']
-    x = state['x']
-    b = state['b']
+        if 3 - y > 3 - x > 0:
+            return False
+        if b == 1 and x == 0 and y == 0:
+            return False
+        if b == 0 and x == 3 and y == 3:
+            return False
+        return True
 
-    if y > x > 0:
-        return False
-    if 3 - y > 3 - x > 0:
-        return False
-    if b == 1 and x == 0 and y == 0:
-        return False
-    if b == 0 and x == 3 and y == 3:
-        return False
-    return True
+    def isLoopFree(self, parent):
+        if parent is None:
+            return True
+        return not (self == parent) and self.isLoopFree(parent.parent)
 
-def bfs_tree_search(root):
-    bfs_queue = queue.Queue()
-    bfs_queue.put(root)
-    while not bfs_queue.empty():
-        current_state = bfs_queue.get()
-        if current_state.isStateGoal():
-            pass
-        else:
-            '''
-            cocuklari zamanla olu;turaca[iz]\ attr'bute olarak de['l fonks'yon olmal'
-            '''
-            for child in current_state.children:
-                bfs_queue.put(child)
+    def __eq__(self, other):
+        return self.m == other.m and self.c == other.c and self.b == other.b
 
-    return
-def create_possible_edges(state,graph):
-    possible_nstate1 = {
-        'x': state['x'] -2 ,
-        'y': state['y'],
-        'b': 0 if state['b'] == 1 else 1
 
-    }
+initialState = {
+    'x': 3,
+    'y': 3,
+    'b': 1,
+    'isVisited': False
+}
 
-    possible_nstate2 = {
-        'x': state['x'] ,
-        'y': state['y'] -2,
-        'b': 0 if state['b'] == 1 else 1
-    }
+graph = {}
 
-    possible_nstate3 = {
-        'x': state['x'] -1,
-        'y': state['y'] -1,
-        'b': 0 if state['b'] == 1 else 1
-    }
-    valid_states = []
-    if isStateValid(possible_nstate1):
-         valid_states.append(possible_nstate1)
+create_possible_edges(initialState, graph)
 
-    if isStateValid(possible_nstate2):
-        valid_states.append(possible_nstate2)
-
-    if isStateValid(possible_nstate3):
-        valid_states.append(possible_nstate3)
-
-    graph[str(len(graph))] = valid_states
-#create_possible_edges(initialState,graph)
+print(graph)
 
 '''
 ilk yaptigimiz system yani her state ve transitioni bulup sonra valid olanlari filtreleyerek
