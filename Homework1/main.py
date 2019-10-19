@@ -75,7 +75,7 @@ def get_solution_path(goal_state):
     for state in path:
         print(state)
 
-initial_state = State(3, 3, 1, None, [])
+initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
 
 
 def bfs_tree_search(root):
