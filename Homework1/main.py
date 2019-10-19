@@ -9,6 +9,8 @@ Eray Şahin
 Kazım Ayberk Tecimer
 """
 import queue
+
+tree = ""
 class State:
     total_missionaries = 4
     total_cannibals = 4
@@ -168,8 +170,17 @@ def pprint_tree(node, file=None, _prefix="", _last=True):
     for i, child in enumerate(node.children):
         _last = i == (child_count - 1)
         pprint_tree(child, file, _prefix, _last)
+        
+def print_tree(state, level=0):
+    global tree
+    path = "\t"*level+ "|___" +repr(state.__str__())+"\n"
+    tree+= path
+    for each in state.children:
+        print_tree(each, level+1)
+          
 
 # Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
 bfs_tree_search(initial_state)
-pprint_tree(initial_state)
+print_tree(initial_state)
+print(tree)
