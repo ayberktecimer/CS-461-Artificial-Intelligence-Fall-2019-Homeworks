@@ -11,14 +11,13 @@ Kazım Ayberk Tecimer
 
 import queue
 
-
 class State:
+    total_missionaries = 4
+    total_cannibals = 4
+    
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
-    total_missionaries = 4
-    total_cannibals = 4
-
     def __init__(self, m, c, b, parent, children):
         """
         Constructor
@@ -142,6 +141,7 @@ def bfs_tree_search(root):
         current_state = bfs_queue.get()
         if current_state.isStateGoal():
             print('Found a Solution')
+            print('Solution Path is as follows:')
             get_solution_path(current_state)
             isSolutionFound = True
             break
@@ -159,7 +159,7 @@ def pprint_tree(node, file=None, _prefix="", _last=True):
     Pretty print tree
     Code adapted from https://vallentin.io/2016/11/29/pretty-print-tree
     """
-    print(_prefix, "`- " if _last else "|---- ", node.value, sep="", file=file)
+    print(_prefix, "`- " if _last else "|- ", node.value, sep="", file=file)
     _prefix += "   " if _last else "|  "
     child_count = len(node.children)
     for i, child in enumerate(node.children):
