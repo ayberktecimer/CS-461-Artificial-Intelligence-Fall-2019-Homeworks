@@ -2,8 +2,8 @@ import queue
 
 
 class State:
-    total_missionaries = 3
-    total_cannibals = 3
+    total_missionaries = 4
+    total_cannibals = 4
 
     def __init__(self, m, c, b, parent, children):
         self.m = m
@@ -84,7 +84,7 @@ def bfs_tree_search(root):
     while not bfs_queue.empty():
         current_state = bfs_queue.get()
         if current_state.isStateGoal():
-            print('Solution Bulundu')
+            print('Found a Solution')
             get_solution_path(current_state)
             exit(0)
         else:
