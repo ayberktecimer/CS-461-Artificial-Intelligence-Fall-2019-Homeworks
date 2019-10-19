@@ -27,27 +27,28 @@ class State:
     def create_possible_edges(self):
         possibleChildren = []
         if self.b == 1:
-            possibleChildren.append(State(self.m - 2, self.c, 0, self, None))
-            possibleChildren.append(State(self.m, self.c - 2, 0, self, None))
-            possibleChildren.append(State(self.m - 1, self.c - 1, 0, self, None))
-            possibleChildren.append(State(self.m - 1, self.c, 0, self, None))
-            possibleChildren.append(State(self.m, self.c - 1, 0, self, None))
+            possibleChildren.append(State(self.m - 2, self.c, 0, self, []))
+            possibleChildren.append(State(self.m, self.c - 2, 0, self, []))
+            possibleChildren.append(State(self.m - 1, self.c - 1, 0, self, []))
+            possibleChildren.append(State(self.m - 1, self.c, 0, self, []))
+            possibleChildren.append(State(self.m, self.c - 1, 0, self, []))
         else:
-            possibleChildren.append(State(self.m + 2, self.c, 1, self, None))
-            possibleChildren.append(State(self.m, self.c + 2, 1, self, None))
-            possibleChildren.append(State(self.m + 1, self.c + 1, 1, self, None))
-            possibleChildren.append(State(self.m + 1, self.c, 1, self, None))
-            possibleChildren.append(State(self.m, self.c + 1, 0, self, None))
+            possibleChildren.append(State(self.m + 2, self.c, 1, self, []))
+            possibleChildren.append(State(self.m, self.c + 2, 1, self, []))
+            possibleChildren.append(State(self.m + 1, self.c + 1, 1, self, []))
+            possibleChildren.append(State(self.m + 1, self.c, 1, self, []))
+            possibleChildren.append(State(self.m, self.c + 1, 1, self, []))
 
         for child in possibleChildren:
-            if child.isStateValid():
+            if child.isStateValid() and child.isLoopFree(self.parent):
                 self.children.append(child)
 
     def isStateValid(self):
         y = self.c
         x = self.m
         b = self.b
-
+        if y < 0 or y > 3 or x < 0 or x > 3:
+            return False
         if y > x > 0:
             return False
         if 3 - y > 3 - x > 0:
@@ -67,18 +68,25 @@ class State:
         return self.m == other.m and self.c == other.c and self.b == other.b
 
 
-initialState = {
-    'x': 3,
-    'y': 3,
-    'b': 1,
-    'isVisited': False
-}
+initialState = State(3, 3, 1, None, [])
+print("aaa")
+initialState.create_possible_edges()
+for each in initialState.children:
+    each.create_possible_edges()
+    print("M: ", each.m)
+    print("C: ", each.c)
+    print("B: ", each.b)
+    print("TRANSITIOOOON")
+    print()
+    for child in each.children:
+        print("M: ", child.m)
+        print("C: ", child.c)
+        print("B: ", child.b)
+        print("children: ", child.children)
+        print("transition over")
 
-graph = {}
 
-create_possible_edges(initialState, graph)
 
-print(graph)
 
 '''
 ilk yaptigimiz system yani her state ve transitioni bulup sonra valid olanlari filtreleyerek
