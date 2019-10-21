@@ -3,7 +3,7 @@ CS461 Homework1
 Fall 2019
 
 Adahan Yalçınkaya
-Bengi Dönmez
+Bengi Dönmez 21602237
 Emre Sülün
 Eray Şahin
 Kazım Ayberk Tecimer
@@ -56,6 +56,11 @@ class State:
 
         for child in possibleChildren:
             if child.isStateValid() and child.isLoopFree(self.parent):
+                """
+                isStateValid checks the next state is safe and isLoopfree 
+                checks the state occurs first time in the current path. If they're both 
+                true it appends to the children list of the state 
+                """
                 self.children.append(child)
 
     def isStateValid(self):
@@ -83,22 +88,29 @@ class State:
         """
         It does the loop checking
         :param parent:
-        :return:
+        :return: True if the path is loop free, False if path consists loops
         """
         if parent is None:
             return True
         return not (self == parent) and self.isLoopFree(parent.parent)
 
     def __eq__(self, other):
+        """
+        :param other: other state
+        :return: equality of the state parameters
+        """
         return self.m == other.m and self.c == other.c and self.b == other.b
 
     def __str__(self):
+        """
+        :return: String representation of the state
+        """
         return str(self.m) + "M" + str(self.c) + 'C' + str(self.b)
 
     def isStateGoal(self):
         """
         Checks if the current state is the goal state.
-        :return:
+        :return: True if it is the goal state, False otherwise
         """
         if self.m == 0 and self.c == 0 and self.b == 0:
             return True
@@ -134,29 +146,29 @@ def bfs_tree_search(root):
     :param root: starting node of the bfs
     :return:
     """
-    bfs_queue = queue.Queue()
-    bfs_queue.put(root)
+    bfs_queue = queue.Queue()  # Constructs an empty queue
+    bfs_queue.put(root)  # Adds root to the queue
     #vısualızatıon
     #v = Visualization()
 
     isSolutionFound = False
     while not bfs_queue.empty():
-        current_state = bfs_queue.get()
+        current_state = bfs_queue.get()  # By using get function initialize current state to the first state in the queue
         #visualızation
         #v.draw_state(current_state)
-        if current_state.isStateGoal():
-            print('Found a Solution')
+        if current_state.isStateGoal():  # Checks whether the current state( first state in queue) is the goal state
+            print('Found a Solution')  # Announces success
             print('One of the solutions paths is as follows:')
-            get_solution_path(current_state)
+            get_solution_path(current_state)  # Prints the solution path
             isSolutionFound = True
             break
-        else:
-            current_state.create_possible_edges()
+        else:  # If current state is not the goal state
+            current_state.create_possible_edges()  # Creates possible ( valid and loop free) children for the state
             for child in current_state.children:
-                bfs_queue.put(child)
+                bfs_queue.put(child)  # Adds the possible children to the queue
 
-    if not isSolutionFound:
-        print('No Solution is found by exhaustively searching list of possible paths\n')
+    if not isSolutionFound:  # If there exist no solution
+        print('No Solution is found by exhaustively searching list of possible paths\n')  # Announces failure
 
 
 def pprint_tree(node, file=None, _prefix="", _last=True):
@@ -172,6 +184,12 @@ def pprint_tree(node, file=None, _prefix="", _last=True):
         pprint_tree(child, file, _prefix, _last)
         
 def print_tree(state, level=0):
+    """
+    Prints the tree
+    :param state: node in the graph
+    :param level: levels of the states in the graph
+    :return:
+    """
     global tree
     path = "\t"*level+ "|___" +repr(state.__str__())+"\n"
     tree+= path
@@ -180,8 +198,8 @@ def print_tree(state, level=0):
           
 
 # Code starts from here
-initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])
-bfs_tree_search(initial_state)
+initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])  # Root of the tree
+bfs_tree_search(initial_state)  # Breadth First Search starting from the initial state
 print('Tree representing the search space done with Breadth First Search:')
-print_tree(initial_state)
+print_tree(initial_state)  # Shows the tree
 print(tree)
