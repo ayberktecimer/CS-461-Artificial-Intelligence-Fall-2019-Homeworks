@@ -185,7 +185,7 @@ def pprint_tree(node, file=None, _prefix="", _last=True):
         
 def print_tree(state, level=0):
     """
-    Prints the tree
+    Prints all the possible paths as a tree
     :param state: node in the graph
     :param level: levels of the states in the graph
     :return:
