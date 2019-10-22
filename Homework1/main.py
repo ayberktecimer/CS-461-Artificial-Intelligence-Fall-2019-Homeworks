@@ -10,14 +10,12 @@ Kazım Ayberk Tecimer 21502531
 """
 import queue
 
-tree = ""
 class State:
-    total_missionaries = 4
-    total_cannibals = 4
-
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
+    total_missionaries = 4
+    total_cannibals = 4
 
     def __init__(self, m, c, b, parent, children):
         """
@@ -57,7 +55,7 @@ class State:
         for child in possibleChildren:
             if child.isStateValid() and child.isLoopFree(self.parent):
                 """
-                isStateValid checks the next state is safe and isLoopfree 
+                isStateValid checks whether the next state is safe and isLoopfree 
                 checks the state occurs first time in the current path. If they're both 
                 true it appends to the children list of the state 
                 """
@@ -72,21 +70,21 @@ class State:
         c = self.c
         m = self.m
         b = self.b
-        if c < 0 or c > State.total_cannibals or m < 0 or m > State.total_missionaries:
+        if c < 0 or c > State.total_cannibals or m < 0 or m > State.total_missionaries: # Check total count
             return False
-        if c > m > 0:
+        if c > m > 0: # Check the safety of west coast
             return False
-        if State.total_cannibals - c > State.total_missionaries - m > 0:
+        if State.total_cannibals - c > State.total_missionaries - m > 0: # Check the safety of east coast
             return False
-        if b == 1 and m == 0 and c == 0:
+        if b == 1 and m == 0 and c == 0: # Check the location of boat
             return False
-        if b == 0 and m == State.total_missionaries and c == State.total_cannibals:
+        if b == 0 and m == State.total_missionaries and c == State.total_cannibals: # Check the location of boat
             return False
         return True
 
     def isLoopFree(self, parent):
         """
-        Checks whether possible children cause a loop, if there is a loop, it does not add possible child as child
+        Checks whether possible children cause a loop. If there is a loop, it does not add possible child as child
         :param parent:
         :return: True if the path is loop free, False if path consists loops
         """
@@ -97,7 +95,7 @@ class State:
     def __eq__(self, other):
         """
         :param other: other state
-        :return: equality of the state parameters
+        :return: True if states are equal
         """
         return self.m == other.m and self.c == other.c and self.b == other.b
 
@@ -148,8 +146,6 @@ def bfs_tree_search(root):
     """
     bfs_queue = queue.Queue()  # Constructs an empty queue
     bfs_queue.put(root)  # Adds root to the queue
-    #vısualızatıon
-    #v = Visualization()
 
     isSolutionFound = False
     while not bfs_queue.empty():
@@ -161,7 +157,7 @@ def bfs_tree_search(root):
             isSolutionFound = True
             break
         else:  # If current state is not the goal state
-            current_state.create_possible_edges()  # Creates possible ( valid and loop free) children for the state
+            current_state.create_possible_edges()  # Creates possible (valid and loop free) children for the state
             for child in current_state.children:
                 bfs_queue.put(child)  # Adds the possible children to the queue
 
@@ -169,19 +165,7 @@ def bfs_tree_search(root):
         print('No Solution is found by exhaustively searching list of possible paths\n')  # Announces failure
         print('As there is no 0M0C0 at the leaf level it means that there is no possible path for the solution, please check tree given below ')
 
-
-def pprint_tree(node, file=None, _prefix="", _last=True):
-    """
-    Pretty print tree
-    Code adapted from https://vallentin.io/2016/11/29/pretty-print-tree
-    """
-    print(_prefix, "`- " if _last else "|- ", node.value, sep="", file=file)
-    _prefix += "   " if _last else "|  "
-    child_count = len(node.children)
-    for i, child in enumerate(node.children):
-        _last = i == (child_count - 1)
-        pprint_tree(child, file, _prefix, _last)
-        
+tree = "" 
 def print_tree(state, level=0):
     """
     Prints all the possible paths as a tree
