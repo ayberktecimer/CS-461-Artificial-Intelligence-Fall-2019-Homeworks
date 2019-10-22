@@ -162,8 +162,8 @@ def bfs_tree_search(root):
                 bfs_queue.put(child)  # Adds the possible children to the queue
 
     if not isSolutionFound:  # If there exist no solution
-        print('No Solution is found by exhaustively searching list of possible paths\n')  # Announces failure
-        print('As there is no 0M0C0 at the leaf level it means that there is no possible path for the solution, please check tree given below ')
+        print('No Solution is found by exhaustively searching list of possible paths via Breadth First Search\n')  # Announces failure
+        print('As there is no 0M0C0 at the leaf level it means that there is no possible solution path for the problem, please check tree given below ')
 
 tree = "" 
 def print_tree(state, level=0):
