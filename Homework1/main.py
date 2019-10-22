@@ -41,7 +41,7 @@ class State:
         :return:
         """
         possibleChildren = []
-        if self.b == 1: # if boat is on the west side, possible are given below
+        if self.b == 1: # if boat is on the west side, possible children are given below
             possibleChildren.append(State(self.m - 2, self.c, 0, self, []))
             possibleChildren.append(State(self.m, self.c - 2, 0, self, []))
             possibleChildren.append(State(self.m - 1, self.c - 1, 0, self, []))
