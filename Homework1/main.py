@@ -2,11 +2,11 @@
 CS461 Homework1
 Fall 2019
 
-Adahan Yalçınkaya
+Adahan Yalçınkaya 21502369
 Bengi Dönmez 21602237
-Emre Sülün
-Eray Şahin
-Kazım Ayberk Tecimer
+Emre Sülün 21502214
+Eray Şahin 21502758
+Kazım Ayberk Tecimer 21502531
 """
 import queue
 
@@ -41,13 +41,13 @@ class State:
         :return:
         """
         possibleChildren = []
-        if self.b == 1:
+        if self.b == 1: # if boat is on the west side, possible are given below
             possibleChildren.append(State(self.m - 2, self.c, 0, self, []))
             possibleChildren.append(State(self.m, self.c - 2, 0, self, []))
             possibleChildren.append(State(self.m - 1, self.c - 1, 0, self, []))
             possibleChildren.append(State(self.m - 1, self.c, 0, self, []))
             possibleChildren.append(State(self.m, self.c - 1, 0, self, []))
-        else:
+        else: # if boat is on the east side, possible children are given below
             possibleChildren.append(State(self.m + 2, self.c, 1, self, []))
             possibleChildren.append(State(self.m, self.c + 2, 1, self, []))
             possibleChildren.append(State(self.m + 1, self.c + 1, 1, self, []))
@@ -86,7 +86,7 @@ class State:
 
     def isLoopFree(self, parent):
         """
-        It does the loop checking
+        Checks whether possible children cause a loop, if there is a loop, it does not add possible child as child
         :param parent:
         :return: True if the path is loop free, False if path consists loops
         """
@@ -154,8 +154,6 @@ def bfs_tree_search(root):
     isSolutionFound = False
     while not bfs_queue.empty():
         current_state = bfs_queue.get()  # By using get function initialize current state to the first state in the queue
-        #visualızation
-        #v.draw_state(current_state)
         if current_state.isStateGoal():  # Checks whether the current state( first state in queue) is the goal state
             print('Found a Solution')  # Announces success
             print('One of the solutions paths is as follows:')
@@ -169,6 +167,7 @@ def bfs_tree_search(root):
 
     if not isSolutionFound:  # If there exist no solution
         print('No Solution is found by exhaustively searching list of possible paths\n')  # Announces failure
+        print('As there is no 0M0C0 at the leaf level it means that there is no possible path for the solution, please check tree given below ')
 
 
 def pprint_tree(node, file=None, _prefix="", _last=True):
