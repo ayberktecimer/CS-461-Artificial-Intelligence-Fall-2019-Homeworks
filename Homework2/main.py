@@ -18,6 +18,7 @@ class State:
     total_missionaries = 4
     total_cannibals = 4
     boat_size = 2
+
     def __init__(self, m, c, b, parent, children):
         """
         Constructor
@@ -52,7 +53,7 @@ class State:
         :return:
         """
         possibleChildren = self.possible_children_depending_bot_size(State.boat_size)
-
+        childrenList = []
         for child in possibleChildren:
             if child.isStateValid() and child.isLoopFree(self.parent):
                 """
@@ -61,6 +62,8 @@ class State:
                 true it appends to the children list of the state 
                 """
                 self.children.append(child)
+                childrenList.append(child)
+        return childrenList
 
     def isStateValid(self):
         """
@@ -116,12 +119,66 @@ class State:
         else:
             return False
 
+class Path:
+
+    def __init__(self):
+        self.stateList = []
+        self.cost = 0
+        self.heuristic = 0
+        self.f_n = 0
+
+    def returnStateList(self):
+        return self.stateList
+
+    def setStateList(self, stateList):
+        self.stateList = stateList
+
+    def appendToStateList(self, state):
+        self.stateList.append(state)
+
+    def compare(self, other):
+        return self.f_n - other.f_n
+
+    def extend_path(self):
+
+        terminatingNode = self.stateList[len(self.stateList) - 1]
+        childrenList = terminatingNode.create_possible_edges()
+
+        pathList = []
+        for child in childrenList:
+            p = Path()
+            p.setStateList(self.stateList)
+            p.appendToStateList(child)
+            p.calculateF_n()
+            pathList.append(p)
+        return pathList
+
+    def calculateCost(self):
+        self.cost = len(self.stateList) - 1
+
+    def calculateHeuristic(self):
+        terminatingNode = self.stateList[len(self.stateList) - 1]
+        self.heuristic = (terminatingNode.c + terminatingNode.m) / State.boat_size
+
+    def calculateF_n(self):
+        self.calculateCost()
+        self.calculateHeuristic()
+        self.f_n = self.heuristic + self.cost
+
+
+
+
+
+
+
+
+
+
+
 def a_star(root):
 
     a_star_queue = queue.Queue()  # Constructs an empty queue
     a_star_queue.put(root)  # Adds root to the queue
-
-
 
 
 tree = ""
@@ -143,7 +200,3 @@ def print_tree(state, level=0):
 
 # Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])  # Root of the tree
-
-
-
-#possible_bot_size(2)
