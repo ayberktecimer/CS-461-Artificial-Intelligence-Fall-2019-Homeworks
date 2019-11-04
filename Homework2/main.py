@@ -165,21 +165,24 @@ class Path:
         self.calculateHeuristic()
         self.f_n = self.heuristic + self.cost
 
-
-
-
-
-
-
-
-
-
-
 def a_star(root):
+    def check_found_goal(path,goal_state):
+        if path.stateList[-1] == goal_state:
+            return True
+        else:
+            return False
 
-    a_star_queue = queue.Queue()  # Constructs an empty queue
+    a_star_queue = queue.PriorityQueue()  # Constructs an empty queue
     a_star_queue.put(root)  # Adds root to the queue
 
+    'or found goal'
+    while a_star_queue.empty() == False or check_found_goal(a_star_queue):
+        head_of_queue = a_star_queue.get()
+        list_of_path = [] #adahanlardan gelecek
+
+        # pathe koyduk, queue is already sorted because we use priority queue
+        for path in list_of_path:
+            a_star_queue.put(f_n,path)
 
 tree = ""
 
@@ -200,3 +203,5 @@ def print_tree(state, level=0):
 
 # Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])  # Root of the tree
+initial_path = Path()
+initial_path.appendToStateList(initial_state)
