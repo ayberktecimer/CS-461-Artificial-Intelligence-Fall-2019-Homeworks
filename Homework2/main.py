@@ -9,6 +9,8 @@ Eray Şahin 21502758
 Kazım Ayberk Tecimer 21502531
 """
 import queue
+
+
 class State:
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
@@ -50,20 +52,6 @@ class State:
         :return:
         """
         possibleChildren = self.possible_children_depending_bot_size(State.boat_size)
-        '''
-        if self.b == 1:  # if boat is on the west side, possible children are given below
-            possibleChildren.append(State(self.m - 2, self.c, 0, self, []))
-            possibleChildren.append(State(self.m, self.c - 2, 0, self, []))
-            possibleChildren.append(State(self.m - 1, self.c - 1, 0, self, []))
-            possibleChildren.append(State(self.m - 1, self.c, 0, self, []))
-            possibleChildren.append(State(self.m, self.c - 1, 0, self, []))
-        else:  # if boat is on the east side, possible children are given below
-            possibleChildren.append(State(self.m + 2, self.c, 1, self, []))
-            possibleChildren.append(State(self.m, self.c + 2, 1, self, []))
-            possibleChildren.append(State(self.m + 1, self.c + 1, 1, self, []))
-            possibleChildren.append(State(self.m + 1, self.c, 1, self, []))
-            possibleChildren.append(State(self.m, self.c + 1, 1, self, []))
-        '''
 
         for child in possibleChildren:
             if child.isStateValid() and child.isLoopFree(self.parent):
@@ -128,11 +116,33 @@ class State:
         else:
             return False
 
+def a_star(root):
 
+    a_star_queue = queue.Queue()  # Constructs an empty queue
+    a_star_queue.put(root)  # Adds root to the queue
+
+
+
+
+tree = ""
+
+
+def print_tree(state, level=0):
+    """
+    Prints all the possible paths as a tree
+    :param state: node in the graph
+    :param level: levels of the states in the graph
+    :return:
+    """
+    global tree
+    path = "\t" * level + "|___" + repr(state.__str__()) + "\n"
+    tree += path
+    for each in state.children:
+        print_tree(each, level + 1)
+
+
+# Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])  # Root of the tree
-
-initial_state.create_possible_edges()
-
 
 
 

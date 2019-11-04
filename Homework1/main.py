@@ -14,8 +14,8 @@ class State:
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
-    total_missionaries = 4
-    total_cannibals = 4
+    total_missionaries = 3
+    total_cannibals = 3
 
     def __init__(self, m, c, b, parent, children):
         """
