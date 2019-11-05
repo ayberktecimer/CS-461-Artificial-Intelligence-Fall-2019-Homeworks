@@ -152,7 +152,8 @@ class State:
     def calculateHeuristic(self):
         """
         Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
-        TODO: explain why this is admissible
+        This heuristic is admissible because when getting closer to the target state, number of people
+        in the left bank decreases.
         """
         return (self.c + self.m) / State.boat_size
 
@@ -308,7 +309,6 @@ def count_shortest_paths(root):
     shortest_paths = []  # list of shortest paths
 
     while queue.isEmpty() is False:
-
         path_in_front = queue.dequeue()  # get the path that is in front of the queue
 
         # remember that the queue is maintained in sorted order
@@ -318,7 +318,6 @@ def count_shortest_paths(root):
 
         # check if "path_in_front" leads to the goal state
         if path_in_front.is_goal_found():
-
             # store the length of the shortest path
             if shortest_length_known is False:
                 shortest_length = path_in_front.get_length()
@@ -341,14 +340,14 @@ def count_shortest_paths(root):
 
 
 # Code starts from here
-
-print("\nQuestion 1:")
+print("Question 1:")
 State.set_problem_constraints(6, 6, 5)
 initial_state = State(State.total_missionaries, State.total_cannibals, 1)  # Root of the tree
 
 a_star(initial_state)
 
-print("\nQuestion 2:")
+print("--------------------------------------------------------------")
+print("Question 2:")
 State.set_problem_constraints(4, 4, 3)
 initial_state = State(State.total_missionaries, State.total_cannibals, 1)  # Root of the tree
 
