@@ -69,7 +69,7 @@ class State:
 
         # To generate children states, we should send missionaries/cannibals in different configurations
         # For that, i and j represent all crossing configurations
-        #       For instance i: 2, j: 1 means 2 missionaries and 1 cannibal will cross
+        # For instance i: 2, j: 1 means 2 missionaries and 1 cannibal will cross
 
         for i in range(0, State.boat_size + 1):
             for j in range(0, State.boat_size + 1):
@@ -135,30 +135,48 @@ class State:
         """
         return str(self.m) + "M" + str(self.c) + 'C' + str(self.b)
 
-    def isStateGoal(self):
+    @staticmethod
+    def getGoalState():
+        """
+        Definition of the GOAL STATE
+        """
+        return State(0, 0, 0)
+
+    def isGoalState(self):
         """
         Checks if the current state is the goal state.
         :return: True if it is the goal state, False otherwise
         """
-        if self.m == 0 and self.c == 0 and self.b == 0:
-            return True
-        else:
-            return False
+        return self == State.getGoalState()
+
+    def calculateHeuristic(self):
+        """
+        Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
+        TODO: explain why this is admissible
+        """
+        return (self.c + self.m) / State.boat_size
 
 
 class Path:
-
+    """
+    Represents a possible path as a list of states
+    """
     def __init__(self):
+        """
+        Constructor
+        """
         self.stateList = []  # sequence of states that form the path
 
-    def path_from_root(self, state):
+    def appendState(self, state):
         self.stateList.append(state)
 
     def copyStateList(self):
-        return self.stateList.copy()  # returns a copy of the state list
+        """
+        Copy constructor
+        """
+        return self.stateList.copy()
 
     def extend_path(self):
-
         terminatingNode = self.get_terminating_node()
         childrenList = terminatingNode.create_possible_edges()
 
@@ -175,26 +193,25 @@ class Path:
     def calculateCost(path):
         return len(path.stateList) - 1
 
-    @staticmethod
-    def calculateHeuristic(path):
-
-        # Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
-        # TODO: explain why this is admissible
-        # TODO: move to node class
-        terminatingNode = path.stateList[len(path.stateList) - 1]
-        return (terminatingNode.c + terminatingNode.m) / State.boat_size
-
-    @staticmethod
-    def calculateF_n(path):
-        cost = Path.calculateCost(path)
-        heuristic_value = Path.calculateHeuristic(path)
+    def calculateF_n(self):
+        """
+        F_n is the sum of cost and heuristic value
+        """
+        cost = self.calculateCost()
+        terminatingNode = self.stateList[len(self.stateList) - 1]
+        heuristic_value = terminatingNode.calculateHeuristic()
         return cost + heuristic_value
 
     def get_terminating_node(self):
+        """
+        :return: The last node in the path
+        """
         return self.stateList[len(self.stateList) - 1]
 
     def print_path(self):
-
+        """
+        Prints the path in an appealing format
+        """
         length = len(self.stateList)
         for i in range(length):
             if i == length - 1:
@@ -204,6 +221,9 @@ class Path:
                 print(" -> ", end='')
 
     def is_loop_free(self):
+        """
+        Checks if the path has loop or not
+        """
         seen_states = set()
         for state in self.stateList:
             state_id = str(state)
@@ -213,12 +233,10 @@ class Path:
         return True
 
     def is_goal_found(self):
-        # Get the terminating node of the path
-        terminating_node = self.get_terminating_node()
-        if terminating_node.isStateGoal():
-            return True
-        else:
-            return False
+        """
+        Checks if the path has reached to goal state or not
+        """
+        return self.get_terminating_node().isGoalState()
 
     def get_length(self):
         return len(self.stateList)
@@ -228,19 +246,18 @@ def a_star(root):
     """
     Performs A* search algorithm
     """
-
     a_star_queue = Queue()  # Constructs an empty queue
 
     # Adds the root to the queue (as a "zero-length path")
     initial_path = Path()
-    initial_path.path_from_root(root)
+    initial_path.appendState(root)
     a_star_queue.enqueue(initial_path)
 
     while a_star_queue.isEmpty() is False:
         path_in_front = a_star_queue.dequeue()
 
         if path_in_front.is_goal_found():
-            print("\nSuccess, shortest path found!")
+            print("Success, found a shortest path!")
             path_in_front.print_path()
             return
         else:
