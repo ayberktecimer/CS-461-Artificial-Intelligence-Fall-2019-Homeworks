@@ -8,62 +8,98 @@ Emre Sülün 21502214
 Eray Şahin 21502758
 Kazım Ayberk Tecimer 21502531
 """
-import queue
+
+
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def enqueue(self, item):
+        self.items.append(item)
+
+    def dequeue(self):
+        return self.items.pop()
+
+    def size(self):
+        return len(self.items)
+
+    def f_n_value(self, path):
+        return path.calculateF_n()
+
+    def print_queue(self):
+        print("Items in the queue:\nHead of the queue:")
+        for path in self.items:
+            path.print_path()
+        print("Tail of the queue")
+
+    def sort(self):
+        self.items.sort(key=self.f_n_value)
 
 
 class State:
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
-    total_missionaries = 4
-    total_cannibals = 4
+    total_missionaries = 3
+    total_cannibals = 3
     boat_size = 2
 
-    def __init__(self, m, c, b, parent, children):
+    def __init__(self, m, c, b):
         """
         Constructor
         :param m: Number of missionaries on the west coast
         :param c: Number of cannibal on the west coast
         :param b: Boats position( 1 if its on the west, 0 if its on the east)
-        :param parent: Previous state
-        :param children: List of next states
         """
         self.m = m
         self.c = c
         self.b = b
-        self.parent = parent
-        self.children = children
         self.value = str(self.m) + "M " + str(self.c) + "C " + str(self.b) + "B"
 
-    # i misyoner, j cannibal
-    def possible_children_depending_bot_size(self,size):
-        possibleChildren = []
-        for i in range(0, size + 1):
-            for j in range(0, size + 1):
-                if (size >= i + j >= 1 and i >= j) or (i == 0 and j != 0):
+    def create_possible_children(self):
+        """
+        This function creates all possible children for current node. In other words, it generates ALL possible states
+        that can follow the current state.
+        :return: list of states
+        """
+        possible_children = []
+
+        # To generate children states, we should send missionaries/cannibals in different configurations
+        # For that, i and j represent all crossing configurations
+        #       For instance i: 2, j: 1 means 2 missionaries and 1 cannibal will cross
+
+        for i in range(0, State.boat_size + 1):
+            for j in range(0, State.boat_size + 1):
+
+                # While creating possible children, make sure that
+                # - the capacity of the boat is not exceeded,
+                # - and missionaries are not outnumbered by cannibals
+
+                if (State.boat_size >= i + j >= 1 and i >= j) or (i == 0 and j != 0):
                     if self.b == 1:
-                        possibleChildren.append(State(self.m - i, self.c - j, 0, self, []))
-                    elif self.b==0:
-                        possibleChildren.append(State(self.m + i, self.c + j, 1, self, []))
-        return possibleChildren
+                        possible_children.append(State(self.m - i, self.c - j, 0))
+                    elif self.b == 0:
+                        possible_children.append(State(self.m + i, self.c + j, 1))
+
+        return possible_children
 
     def create_possible_edges(self):
         """
-        This function creates possible children for current node.
-        :return:
+        This function calls "create_possible_children", and eliminates the unsafe states. At the end, it returns a list
+        of "children" states that are safe.
+        :return: list of states
         """
-        possibleChildren = self.possible_children_depending_bot_size(State.boat_size)
-        childrenList = []
-        for child in possibleChildren:
-            if child.isStateValid() and child.isLoopFree(self.parent):
-                """
-                isStateValid checks whether the next state is safe and isLoopfree 
-                checks the state occurs first time in the current path. If they're both 
-                true it appends to the children list of the state 
-                """
-                self.children.append(child)
-                childrenList.append(child)
-        return childrenList
+        possible_children = self.create_possible_children()
+        valid_states = []
+
+        for child in possible_children:
+            if child.isStateValid():  # isStateValid checks whether the "child" state is valid and safe
+                valid_states.append(child)
+
+        return valid_states
 
     def isStateValid(self):
         """
@@ -85,16 +121,6 @@ class State:
         if b == 0 and m == State.total_missionaries and c == State.total_cannibals:  # Check the location of boat
             return False
         return True
-
-    def isLoopFree(self, parent):
-        """
-        Checks whether possible children cause a loop. If there is a loop, it does not add possible child as child
-        :param parent:
-        :return: True if the path is loop free, False if path consists loops
-        """
-        if parent is None:
-            return True
-        return not (self == parent) and self.isLoopFree(parent.parent)
 
     def __eq__(self, other):
         """
@@ -119,70 +145,109 @@ class State:
         else:
             return False
 
+
 class Path:
 
     def __init__(self):
-        self.stateList = []
-        self.cost = 0
-        self.heuristic = 0
-        self.f_n = 0
+        self.stateList = []  # sequence of states that form the path
 
-    def returnStateList(self):
-        return self.stateList
-
-    def setStateList(self, stateList):
-        self.stateList = stateList
-
-    def appendToStateList(self, state):
+    def path_from_root(self, state):
         self.stateList.append(state)
 
+    def copyStateList(self):
+        return self.stateList.copy()  # returns a copy of the state list
+
     def compare(self, other):
-        return self.f_n - other.f_n
+        return self.calculateF_n() - other.calculateF_n()
 
     def extend_path(self):
 
-        terminatingNode = self.stateList[len(self.stateList) - 1]
+        terminatingNode = self.get_terminating_node()
         childrenList = terminatingNode.create_possible_edges()
 
         pathList = []
         for child in childrenList:
             p = Path()
-            p.setStateList(self.stateList)
-            p.appendToStateList(child)
-            p.calculateF_n()
+            p.stateList = self.copyStateList()
+            p.stateList.append(child)
             pathList.append(p)
+
         return pathList
 
     def calculateCost(self):
-        self.cost = len(self.stateList) - 1
+        return len(self.stateList) - 1
 
     def calculateHeuristic(self):
+
+        # Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
         terminatingNode = self.stateList[len(self.stateList) - 1]
-        self.heuristic = (terminatingNode.c + terminatingNode.m) / State.boat_size
+        return (terminatingNode.c + terminatingNode.m) / State.boat_size
 
     def calculateF_n(self):
-        self.calculateCost()
-        self.calculateHeuristic()
-        self.f_n = self.heuristic + self.cost
+        cost = self.calculateCost()
+        heuristic_value = self.calculateHeuristic()
+        return cost + heuristic_value
+
+    def get_terminating_node(self):
+        return self.stateList[len(self.stateList) - 1]
+
+    def print_path(self):
+
+        length = len(self.stateList)
+        for i in range(length):
+            if i == length - 1:
+                print(self.stateList[i])
+            else:
+                print(self.stateList[i], end='')
+                print(" -> ", end='')
+
+    def is_loop_free(self):
+        seen_states = set()
+        for state in self.stateList:
+            state_id = str(state)
+            if state_id in seen_states:
+                return False
+            seen_states.add(state_id)
+        return True
+
 
 def a_star(root):
-    def check_found_goal(path,goal_state):
-        if path.stateList[-1] == goal_state:
+
+    def is_goal_found(path):
+
+        # Get the terminating node of the path
+        terminating_node = path.get_terminating_node()
+        if terminating_node.isStateGoal():
             return True
         else:
             return False
 
-    a_star_queue = queue.PriorityQueue()  # Constructs an empty queue
-    a_star_queue.put(root)  # Adds root to the queue
+    a_star_queue = Queue()  # Constructs an empty queue
 
-    'or found goal'
-    while a_star_queue.empty() == False or check_found_goal(a_star_queue):
-        head_of_queue = a_star_queue.get()
-        list_of_path = [] #adahanlardan gelecek
+    # Adds the root to the queue (as a "zero-length path")
+    initial_path = Path()
+    initial_path.path_from_root(root)
+    a_star_queue.enqueue(initial_path)
 
-        # pathe koyduk, queue is already sorted because we use priority queue
-        for path in list_of_path:
-            a_star_queue.put(f_n,path)
+    while a_star_queue.size() > 0:
+
+        path_in_front = a_star_queue.dequeue()
+
+        if is_goal_found(path_in_front):
+            print("\nSuccess, found a path!")
+            path_in_front.print_path()
+            return
+        else:
+            extended_paths = path_in_front.extend_path()
+
+            for path in extended_paths:
+                if path.is_loop_free():
+                    a_star_queue.enqueue(path)
+
+        a_star_queue.sort()
+
+    print("\nNo path found.")
+
 
 tree = ""
 
@@ -202,6 +267,25 @@ def print_tree(state, level=0):
 
 
 # Code starts from here
-initial_state = State(State.total_missionaries, State.total_cannibals, 1, None, [])  # Root of the tree
-initial_path = Path()
-initial_path.appendToStateList(initial_state)
+initial_state = State(State.total_missionaries, State.total_cannibals, 1)  # Root of the tree
+a_star(initial_state)
+
+'''
+a, b, c, d = State(2, 1, 0), State(2, 2, 1), State(2, 1, 0), State(3, 3, 1)
+p1, p2, p3 = Path(), Path(), Path()
+p1.stateList = [a, b, c, d]
+p2.stateList = [c, b]
+p3.stateList = [d, b, a]
+print(p1.calculateF_n())
+print(p2.calculateF_n())
+print(p3.calculateF_n())
+q2 = Queue()
+q2.enqueue(p1)
+q2.enqueue(p2)
+q2.enqueue(p3)
+print("\nBEFORE SORTING")
+q2.print_queue()
+q2.sort()
+print("\nAFTER SORTING")
+q2.print_queue()
+'''
