@@ -26,17 +26,17 @@ class Queue:
     def size(self):
         return len(self.items)
 
-    def f_n_value(self, path):
-        return path.calculateF_n()
-
     def print_queue(self):
         print("Items in the queue:\nHead of the queue:")
         for path in self.items:
             path.print_path()
         print("Tail of the queue")
 
-    def sort(self):
-        self.items.sort(key=self.f_n_value)
+    def sort_by_f_n(self):
+        self.items.sort(key=Path.calculateF_n)
+
+    def sort_by_cost(self):
+        self.items.sort(key=Path.calculateCost)
 
 
 class State:
@@ -157,9 +157,6 @@ class Path:
     def copyStateList(self):
         return self.stateList.copy()  # returns a copy of the state list
 
-    def compare(self, other):
-        return self.calculateF_n() - other.calculateF_n()
-
     def extend_path(self):
 
         terminatingNode = self.get_terminating_node()
@@ -174,20 +171,23 @@ class Path:
 
         return pathList
 
-    def calculateCost(self):
-        return len(self.stateList) - 1
+    @staticmethod
+    def calculateCost(path):
+        return len(path.stateList) - 1
 
-    def calculateHeuristic(self):
+    @staticmethod
+    def calculateHeuristic(path):
 
         # Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
         # TODO: explain why this is admissible
         # TODO: move to node class
-        terminatingNode = self.stateList[len(self.stateList) - 1]
+        terminatingNode = path.stateList[len(path.stateList) - 1]
         return (terminatingNode.c + terminatingNode.m) / State.boat_size
 
-    def calculateF_n(self):
-        cost = self.calculateCost()
-        heuristic_value = self.calculateHeuristic()
+    @staticmethod
+    def calculateF_n(path):
+        cost = Path.calculateCost(path)
+        heuristic_value = Path.calculateHeuristic(path)
         return cost + heuristic_value
 
     def get_terminating_node(self):
@@ -212,14 +212,16 @@ class Path:
             seen_states.add(state_id)
         return True
 
+    def is_goal_found(self):
+        # Get the terminating node of the path
+        terminating_node = self.get_terminating_node()
+        if terminating_node.isStateGoal():
+            return True
+        else:
+            return False
 
-def is_goal_found(path):
-    # Get the terminating node of the path
-    terminating_node = path.get_terminating_node()
-    if terminating_node.isStateGoal():
-        return True
-    else:
-        return False
+    def get_length(self):
+        return len(self.stateList)
 
 
 def a_star(root):
@@ -237,8 +239,8 @@ def a_star(root):
     while a_star_queue.isEmpty() is False:
         path_in_front = a_star_queue.dequeue()
 
-        if is_goal_found(path_in_front):
-            print("Success, found a path!")
+        if path_in_front.is_goal_found():
+            print("\nSuccess, shortest path found!")
             path_in_front.print_path()
             return
         else:
@@ -248,9 +250,23 @@ def a_star(root):
                 if path.is_loop_free():
                     a_star_queue.enqueue(path)
 
-        a_star_queue.sort()
+        a_star_queue.sort_by_f_n()
 
     print("No path found.")
+
+
+def branch_and_bound(root):
+    queue = Queue()
+
+    # Adds the root to the queue (as a "zero-length path")
+    initial_path = Path()
+    initial_path.path_from_root(root)
+    queue.enqueue(initial_path)
+
+    while queue.isEmpty() is False:
+        path_in_front = queue.dequeue()
+
+        # if path_in_front.get_length() > shortest_length:
 
 
 # Code starts from here
