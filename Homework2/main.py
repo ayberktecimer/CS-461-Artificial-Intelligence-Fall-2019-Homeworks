@@ -43,9 +43,9 @@ class State:
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
-    total_missionaries = 6
-    total_cannibals = 6
-    boat_size = 5
+    total_missionaries = 0
+    total_cannibals = 0
+    boat_size = 0
 
     def __init__(self, m, c, b):
         """
@@ -156,6 +156,19 @@ class State:
         """
         return (self.c + self.m) / State.boat_size
 
+    @staticmethod
+    def set_problem_constraints(num_missionaries, num_cannibals, boat_capacity):
+        """
+        Sets the constraints imposed by the question.
+        :param num_missionaries: number of missionaries
+        :param num_cannibals: number of cannibals
+        :param boat_capacity: capacity of the boat
+        :return:
+        """
+        State.total_missionaries = num_missionaries
+        State.total_cannibals = num_cannibals
+        State.boat_size = boat_capacity
+
 
 class Path:
     """
@@ -193,12 +206,13 @@ class Path:
     def calculateCost(path):
         return len(path.stateList) - 1
 
-    def calculateF_n(self):
+    @staticmethod
+    def calculateF_n(path):
         """
         F_n is the sum of cost and heuristic value
         """
-        cost = self.calculateCost()
-        terminatingNode = self.stateList[len(self.stateList) - 1]
+        cost = Path.calculateCost(path)
+        terminatingNode = path.stateList[len(path.stateList) - 1]
         heuristic_value = terminatingNode.calculateHeuristic()
         return cost + heuristic_value
 
@@ -272,20 +286,70 @@ def a_star(root):
     print("No path found.")
 
 
-def branch_and_bound(root):
-    queue = Queue()
+def count_shortest_paths(root):
+    """
+    This function counts the number of shortest paths.
+
+    To do so, it follows a strategy that is similar to "branch-and-bound". Firstly, it finds a shortest path and
+    stores the length of the path. Then, it expands all paths in the queue until their length EXCEED the length of
+    the shortest path. The reason for expanding all of them is to identify alternative shortest paths.
+
+    :param root: initial state
+    """
 
     # Adds the root to the queue (as a "zero-length path")
+    queue = Queue()
     initial_path = Path()
-    initial_path.path_from_root(root)
+    initial_path.appendState(root)
     queue.enqueue(initial_path)
 
-    while queue.isEmpty() is False:
-        path_in_front = queue.dequeue()
+    shortest_length_known = False  # indicates whether the length of the shortest path is known
+    shortest_length = None  # length of the shortest path
+    shortest_paths = []  # list of shortest paths
 
-        # if path_in_front.get_length() > shortest_length:
+    while queue.isEmpty() is False:
+
+        path_in_front = queue.dequeue()  # get the path that is in front of the queue
+
+        # remember that the queue is maintained in sorted order
+        # therefore, we can stop whenever we encounter paths that are LONGER THAN our shortest-length path
+        if shortest_length_known and path_in_front.get_length() > shortest_length:
+            break
+
+        # check if "path_in_front" leads to the goal state
+        if path_in_front.is_goal_found():
+
+            # store the length of the shortest path
+            if shortest_length_known is False:
+                shortest_length = path_in_front.get_length()
+                shortest_length_known = True
+
+            shortest_paths.append(path_in_front)
+
+        # if "path_in_front" does not lead to the goal state
+        else:
+            extended_paths = path_in_front.extend_path()  # extend it and add the new paths to queue
+            for path in extended_paths:
+                if path.is_loop_free():
+                    queue.enqueue(path)
+
+        queue.sort_by_cost()  # maintain the queue in sorted order by path lengths (as in "branch-and-bound")
+
+    print("Found " + str(len(shortest_paths)) + " shortest paths.")
+    for path in shortest_paths:
+        path.print_path()
 
 
 # Code starts from here
+
+print("\nQuestion 1:")
+State.set_problem_constraints(6, 6, 5)
 initial_state = State(State.total_missionaries, State.total_cannibals, 1)  # Root of the tree
+
 a_star(initial_state)
+
+print("\nQuestion 2:")
+State.set_problem_constraints(4, 4, 3)
+initial_state = State(State.total_missionaries, State.total_cannibals, 1)  # Root of the tree
+
+count_shortest_paths(initial_state)
