@@ -21,7 +21,7 @@ class Queue:
         self.items.append(item)
 
     def dequeue(self):
-        return self.items.pop()
+        return self.items.pop(0)
 
     def size(self):
         return len(self.items)
@@ -43,9 +43,9 @@ class State:
     """
     This class represents the node in the graph. Each node corresponds to the state of the west coast.
     """
-    total_missionaries = 3
-    total_cannibals = 3
-    boat_size = 2
+    total_missionaries = 6
+    total_cannibals = 6
+    boat_size = 5
 
     def __init__(self, m, c, b):
         """
@@ -180,6 +180,8 @@ class Path:
     def calculateHeuristic(self):
 
         # Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
+        # TODO: explain why this is admissible
+        # TODO: move to node class
         terminatingNode = self.stateList[len(self.stateList) - 1]
         return (terminatingNode.c + terminatingNode.m) / State.boat_size
 
@@ -211,16 +213,19 @@ class Path:
         return True
 
 
+def is_goal_found(path):
+    # Get the terminating node of the path
+    terminating_node = path.get_terminating_node()
+    if terminating_node.isStateGoal():
+        return True
+    else:
+        return False
+
+
 def a_star(root):
-
-    def is_goal_found(path):
-
-        # Get the terminating node of the path
-        terminating_node = path.get_terminating_node()
-        if terminating_node.isStateGoal():
-            return True
-        else:
-            return False
+    """
+    Performs A* search algorithm
+    """
 
     a_star_queue = Queue()  # Constructs an empty queue
 
@@ -229,12 +234,11 @@ def a_star(root):
     initial_path.path_from_root(root)
     a_star_queue.enqueue(initial_path)
 
-    while a_star_queue.size() > 0:
-
+    while a_star_queue.isEmpty() is False:
         path_in_front = a_star_queue.dequeue()
 
         if is_goal_found(path_in_front):
-            print("\nSuccess, found a path!")
+            print("Success, found a path!")
             path_in_front.print_path()
             return
         else:
@@ -246,46 +250,9 @@ def a_star(root):
 
         a_star_queue.sort()
 
-    print("\nNo path found.")
-
-
-tree = ""
-
-
-def print_tree(state, level=0):
-    """
-    Prints all the possible paths as a tree
-    :param state: node in the graph
-    :param level: levels of the states in the graph
-    :return:
-    """
-    global tree
-    path = "\t" * level + "|___" + repr(state.__str__()) + "\n"
-    tree += path
-    for each in state.children:
-        print_tree(each, level + 1)
+    print("No path found.")
 
 
 # Code starts from here
 initial_state = State(State.total_missionaries, State.total_cannibals, 1)  # Root of the tree
 a_star(initial_state)
-
-'''
-a, b, c, d = State(2, 1, 0), State(2, 2, 1), State(2, 1, 0), State(3, 3, 1)
-p1, p2, p3 = Path(), Path(), Path()
-p1.stateList = [a, b, c, d]
-p2.stateList = [c, b]
-p3.stateList = [d, b, a]
-print(p1.calculateF_n())
-print(p2.calculateF_n())
-print(p3.calculateF_n())
-q2 = Queue()
-q2.enqueue(p1)
-q2.enqueue(p2)
-q2.enqueue(p3)
-print("\nBEFORE SORTING")
-q2.print_queue()
-q2.sort()
-print("\nAFTER SORTING")
-q2.print_queue()
-'''
