@@ -153,7 +153,7 @@ class State:
         """
         Our heuristic function is h = (number of people on the initial bank) divided by (the size of the boat)
         This heuristic is admissible because when getting closer to the target state, number of people
-        in the left bank decreases.
+        in the left bank decreases. Dividing by boat size is required to comply with underestimation rule.
         """
         return (self.c + self.m) / State.boat_size
 
