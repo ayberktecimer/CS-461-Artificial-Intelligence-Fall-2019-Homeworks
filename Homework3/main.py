@@ -17,7 +17,7 @@ class Board:
     def __init__(self):
         self.current_state = None
         self.children = []
-        self.parent = []
+        self.parent = None
         self.next_turn = None
         self.score = None
         self.depth = 0
@@ -109,6 +109,18 @@ class Board:
             self.alternate_turn()
         else:
             print("Row:", row, ", Column: ", col, " is occupied.")
+
+    def print_board(self):
+        print("Score:", self.score, "\n")
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if self.current_state[i][j] == '':
+                    print(' _ ', end='')
+                elif self.current_state[i][j] == 'X':
+                    print(' X ', end='')
+                else:
+                    print(' O ', end='')
+            print('')
 
     def calculate_current_state_score(self):
         # e30 a biner yan yan gider
@@ -270,6 +282,7 @@ class Tree:
                         child.make_move(i, j)
                         child.parent = board
                         child.depth = child.parent.depth + 1
+
                         board.children.append(child)
                         self.create_children(child)
 '''
@@ -326,8 +339,20 @@ def alpha_beta(Board, alpha, beta, alpha_node, beta_node):
         return Board.calculate_current_state_score(), Board
 
 
-
 t = Tree()
+print("Calculating the tree")
 t.generate_full_tree()
-result = alpha_beta(t.root, None, None, None, None)
+result_score, result_state = alpha_beta(t.root, None, None, None, None)
+
+
+def print_game_path(state):
+    if state.parent is None:
+        state.print_board()
+        return
+    print_game_path(state.parent)
+    state.print_board()
+    return
+
+
+print_game_path(result_state)
 print()
