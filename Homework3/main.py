@@ -19,9 +19,11 @@ class Board:
         self.children = []
         self.parent = None
         self.next_turn = None
-        self.score = None
+        self.virtual_value = None
         self.depth = 0
-
+        self.alpha = - math.inf
+        self.beta = math.inf
+        #self.virtual_value = None
     @staticmethod
     def get_initial_board():
 
@@ -110,8 +112,14 @@ class Board:
         else:
             print("Row:", row, ", Column: ", col, " is occupied.")
 
+    def print_virtual_values(self):
+        print("Virtual Values: ")
+        for i in range(len(self.children)):
+            if i == len(self.children) - 1:
+                print(self.children[i].virtual_value, end='')
+            else:
+                print(self.children[i].virtual_value, end=' -> ')
     def print_board(self):
-        print("Score:", self.score, "\n")
         for i in range(0, 3):
             for j in range(0, 3):
                 if self.current_state[i][j] == '':
@@ -239,8 +247,8 @@ class Board:
             o_score += 100
 
         total_score = x_score - o_score
-        self.score = total_score
-        return self.score
+        self.virtual_value = total_score
+        return self.virtual_value
 
 
 '''
@@ -324,16 +332,20 @@ def alpha_beta(Board, alpha, beta, alpha_node, beta_node):
             if is_max_level:
                 if result_value > alpha:
                     alpha = result_value
+                    Board.alpha = alpha
                     alpha_node = result_node
             else:
                 if result_value < beta:
                     beta = result_value
+                    Board.beta = beta
                     beta_node = result_node
             if alpha >= beta:
                 break
         if is_max_level:
+            Board.virtual_value = Board.alpha
             return alpha,alpha_node
         else:
+            Board.virtual_value = Board.beta
             return beta,beta_node
     else:
         return Board.calculate_current_state_score(), Board
@@ -355,4 +367,5 @@ def print_game_path(state):
 
 
 print_game_path(result_state)
+t.root.print_virtual_values()
 print()
