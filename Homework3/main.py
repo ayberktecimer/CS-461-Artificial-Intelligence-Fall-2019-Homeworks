@@ -1,3 +1,14 @@
+import math
+"""
+CS461 Homework3
+Fall 2019
+
+Adahan Yalçınkaya 21502369
+Bengi Dönmez 21602237
+Emre Sülün 21502214
+Eray Şahin 21502758
+Kazım Ayberk Tecimer 21502531
+"""
 import copy
 
 
@@ -121,7 +132,7 @@ class Board:
             if x_count == 3:
                 # ??????
                 x_score += 100
-                self.is_game_finished = 1
+
             if o_count == 1:
                 o_score += 1
             elif o_count == 2:
@@ -129,7 +140,7 @@ class Board:
             if o_count == 3:
                 # ??????
                 o_score += 100
-                self.is_game_finished = -1
+
 
                 ### dik dik gider
         for j in range(0, 3):
@@ -149,7 +160,7 @@ class Board:
             if x_count == 3:
                 # ??????
                 x_score += 100
-                self.is_game_finished = 1
+
             if o_count == 1:
                 o_score += 1
             elif o_count == 2:
@@ -157,7 +168,7 @@ class Board:
             if o_count == 3:
                 # ??????
                 o_score += 100
-                self.is_game_finished = -1
+
 
                 ## saga dogru capraz gider
         x_count = 0
@@ -176,14 +187,14 @@ class Board:
         if x_count == 3:
             # ??????
             x_score += 100
-            self.is_game_finished = 1
+
         if o_count == 1:
             o_score += 1
         elif o_count == 2:
             o_score += 10
         if o_count == 3:
             # ??????
-            self.is_game_finished = -1
+
             o_score += 100
 
         x_count = 0
@@ -206,7 +217,7 @@ class Board:
         if x_count == 3:
             # ??????
             x_score += 100
-            self.is_game_finished = 1
+
         if o_count == 1:
             o_score += 1
         elif o_count == 2:
@@ -214,7 +225,7 @@ class Board:
         if o_count == 3:
             # ??????
             o_score += 100
-            self.is_game_finished = -1
+
         total_score = x_score - o_score
         self.score = total_score
         return self.score
@@ -260,10 +271,61 @@ class Tree:
                         child.parent = board
                         child.depth = child.parent.depth + 1
                         board.children.append(child)
-
                         self.create_children(child)
+'''
+CODE IS ADAPTED FROM http://web.mit.edu/dxh/www/adverse/index.html
+Alpha-Beta-search(node, maximizing?, α, β, α-node, β-node)
+    If α and β are undefined:
+        Set α = −∞ and β = +∞.
+    If node has children:
+        For each child child of node:
+            Set ⟨result_value, result_node⟩ = Alpha-Beta-search(child, not maximizing?, α, β, α-node, β-node)
+            If maximizing?:
+                If result_value > α:
+                    Set ⟨α, α-node⟩ = ⟨result_value, result_node⟩.
+            Else:
+                If result_value < β:
+                    Set ⟨β, β-node⟩ = ⟨result_value, result_node⟩.
+            If α ≥ β: // if node can be pruned
+                Exit the for loop early.
+        End For.
+        If maximizing?:
+            Return ⟨α, α-node⟩.
+        Else:
+            Return ⟨β, β-node⟩.
+    Else:
+        Return node and the static value of node.
+'''
+def alpha_beta(Board,is_max_level,alpha,beta,alpha_node,beta_node):
+    depth = Board.depth
+    is_max_level = True if depth%2 == 0 else False
+    if alpha is None and beta is None:
+        alpha =  - math.inf
+        beta = math.inf
+    children = Board.children
+    if len(children) > 0 :
+        for child in children:
+            result_value,result_node = alpha_beta(child,is_max_level,alpha,beta)
+            if is_max_level:
+                if result_value > alpha:
+                    alpha = result_value
+                    alpha_node = result_node
+            else:
+                if result_value < beta:
+                    beta = result_value
+                    beta_node = result_node
+            if alpha >= beta:
+                break
+        if is_max_level:
+            return alpha,alpha_node
+        else:
+            return beta,beta_node
+    else:
+        return Board.calculate_current_state_score(), Board
+
 
 
 t = Tree()
 t.generate_full_tree()
+alpha_beta(t.root,True,None,None,None,None)
 print()
