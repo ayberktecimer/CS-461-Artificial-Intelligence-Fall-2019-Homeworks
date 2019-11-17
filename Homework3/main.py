@@ -296,7 +296,9 @@ Alpha-Beta-search(node, maximizing?, α, β, α-node, β-node)
     Else:
         Return node and the static value of node.
 '''
-def alpha_beta(Board,is_max_level,alpha,beta,alpha_node,beta_node):
+
+
+def alpha_beta(Board, alpha, beta, alpha_node, beta_node):
     depth = Board.depth
     is_max_level = True if depth%2 == 0 else False
     if alpha is None and beta is None:
@@ -305,7 +307,7 @@ def alpha_beta(Board,is_max_level,alpha,beta,alpha_node,beta_node):
     children = Board.children
     if len(children) > 0 :
         for child in children:
-            result_value,result_node = alpha_beta(child,is_max_level,alpha,beta)
+            result_value, result_node = alpha_beta(child, alpha, beta, alpha_node, beta_node)
             if is_max_level:
                 if result_value > alpha:
                     alpha = result_value
@@ -327,5 +329,5 @@ def alpha_beta(Board,is_max_level,alpha,beta,alpha_node,beta_node):
 
 t = Tree()
 t.generate_full_tree()
-alpha_beta(t.root,True,None,None,None,None)
+result = alpha_beta(t.root, None, None, None, None)
 print()
