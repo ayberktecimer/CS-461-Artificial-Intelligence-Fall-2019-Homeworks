@@ -3,25 +3,29 @@ class Board:
     def __init__(self):
         self.current_state = None
         self.children = None
+        self.next_turn = None
 
     @staticmethod
     def get_initial_board():
 
         board = Board()
+
         board_state = [['', '', ''], ['', '', ''], ['', '', '']]
         board.current_state = board_state
         board.children = []
+        board.next_turn = 'X'
         return board
 
-    def put_x(self, row, col):
-        self.put_char(row, col, 'X')
+    def alternate_turn(self):
+        if self.next_turn == 'X':
+            self.next_turn = 'O'
+        else:
+            self.next_turn = 'X'
 
-    def put_o(self, row, col):
-        self.put_char(row, col, 'O')
-
-    def put_char(self, row, col, char):
+    def make_move(self, row, col):
         if self.current_state[row][col] == '':
-            self.current_state[row][col] = char
+            self.current_state[row][col] = self.next_turn
+            self.alternate_turn()
         else:
             print("Row:", row, ", Column: ", col, " is occupied.")
 
@@ -137,10 +141,10 @@ class Board:
         return total_score
 
 initial_board = Board.get_initial_board()
-initial_board.put_x(1, 2)
-initial_board.put_o(2, 2)
-initial_board.put_o(1,1)
-initial_board.put_x(1,1)
+initial_board.make_move(1, 2)
+initial_board.make_move(2, 2)
+initial_board.make_move(1, 1)
+initial_board.make_move(1, 1)
 print(initial_board.calculate_current_state_score())
 print()
 
