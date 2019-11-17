@@ -4,7 +4,8 @@ class Board:
         self.current_state = None
         self.children = None
         self.next_turn = None
-
+        self.score = None
+        self.is_game_finished = 0
     @staticmethod
     def get_initial_board():
 
@@ -51,6 +52,7 @@ class Board:
             if x_count == 3:
                 # ??????
                 x_score += 100
+                self.is_game_finished = 1
             if o_count == 1:
                 o_score += 1
             elif o_count == 2:
@@ -58,8 +60,9 @@ class Board:
             if o_count == 3:
                 # ??????
                 o_score += 100
+                self.is_game_finished = -1
 
-        ### dik dik gider
+                ### dik dik gider
         for j in range(0, 3):
             x_count = 0
             o_count = 0
@@ -77,6 +80,7 @@ class Board:
             if x_count == 3:
                 # ??????
                 x_score += 100
+                self.is_game_finished = 1
             if o_count == 1:
                 o_score += 1
             elif o_count == 2:
@@ -84,8 +88,9 @@ class Board:
             if o_count == 3:
                 # ??????
                 o_score += 100
+                self.is_game_finished = -1
 
-        ## saga dogru capraz gider
+                ## saga dogru capraz gider
         x_count = 0
         o_count = 0
         for i in range(0, len(self.current_state)):
@@ -102,12 +107,14 @@ class Board:
         if x_count == 3:
             # ??????
             x_score += 100
+            self.is_game_finished = 1
         if o_count == 1:
             o_score += 1
         elif o_count == 2:
             o_score += 10
         if o_count == 3:
             # ??????
+            self.is_game_finished = -1
             o_score += 100
 
         x_count = 0
@@ -130,6 +137,7 @@ class Board:
         if x_count == 3:
             # ??????
             x_score += 100
+            self.is_game_finished = 1
         if o_count == 1:
             o_score += 1
         elif o_count == 2:
@@ -137,8 +145,10 @@ class Board:
         if o_count == 3:
             # ??????
             o_score += 100
+            self.is_game_finished = -1
         total_score = x_score - o_score
-        return total_score
+        self.score = total_score
+        return self.score
 
 initial_board = Board.get_initial_board()
 initial_board.make_move(1, 2)
@@ -150,7 +160,6 @@ print()
 
 
 class Tree:
-
     def __init__(self):
         self.root = Board()
 
