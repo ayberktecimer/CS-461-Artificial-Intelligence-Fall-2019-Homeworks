@@ -3,9 +3,17 @@ class Board:
     def __init__(self):
         self.current_state = None
         self.children = None
+        self.parent = None
         self.next_turn = None
         self.score = None
-        self.is_game_finished = 0
+        self.is_game_finished = None
+
+    def copy_board(self):
+        copy_of_board = Board()
+        copy_of_board.current_state = self.current_state.copy()
+        copy_of_board.next_turn = self.next_turn
+        return copy_of_board
+
     @staticmethod
     def get_initial_board():
 
@@ -14,8 +22,26 @@ class Board:
         board_state = [['', '', ''], ['', '', ''], ['', '', '']]
         board.current_state = board_state
         board.children = []
+        board.parent = None
         board.next_turn = 'X'
         return board
+
+    def is_game_tie(self):
+
+        count = 0
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if self.current_state[i][j] != '':
+                    count += 1
+        if self.is_game_finished is None and count == 9:
+            self.is_game_finished = 0
+
+    def is_full(self):
+        for i in range(3):
+            for j in range(3):
+                if self.current_state[i][j] == '':
+                    return False
+        return True
 
     def alternate_turn(self):
         if self.next_turn == 'X':
@@ -150,21 +176,40 @@ class Board:
         self.score = total_score
         return self.score
 
+
 initial_board = Board.get_initial_board()
-initial_board.make_move(1, 2)
+initial_board.make_move(2, 1)
+initial_board.make_move(1, 1)
 initial_board.make_move(2, 2)
-initial_board.make_move(1, 1)
-initial_board.make_move(1, 1)
+initial_board.make_move(2, 0)
+initial_board.make_move(0, 2)
+initial_board.make_move(1, 2)
+initial_board.make_move(1, 0)
+initial_board.make_move(0, 1)
+initial_board.make_move(0, 0)
+initial_board.is_game_tie()
 print(initial_board.calculate_current_state_score())
-print()
+print(initial_board.is_game_finished)
 
 
 class Tree:
     def __init__(self):
-        self.root = Board()
+        self.root = Board.get_initial_board()
 
+    def generate_full_tree(self):
+        self.create_children(self.root)
 
+    def create_children(self, board):
 
+        if board.is_full() or board.is_game_over():
+            return
+        else:
+            for i in range(3):
+                for j in range(3):
+                    if board.current_state[i][j] == '':
+                        child = board.copy_board()
+                        child.make_move(i, j)
+                        board.children.append(child)
+                        child.parent = board
 
-
-
+                        self.create_children(child)
