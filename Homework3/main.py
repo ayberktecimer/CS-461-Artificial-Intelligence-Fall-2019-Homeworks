@@ -1,18 +1,15 @@
+import copy
+
+
 class Board:
 
     def __init__(self):
         self.current_state = None
-        self.children = None
-        self.parent = None
+        self.children = []
+        self.parent = []
         self.next_turn = None
         self.score = None
-        self.is_game_finished = None
-
-    def copy_board(self):
-        copy_of_board = Board()
-        copy_of_board.current_state = self.current_state.copy()
-        copy_of_board.next_turn = self.next_turn
-        return copy_of_board
+        self.depth = 0
 
     @staticmethod
     def get_initial_board():
@@ -26,6 +23,14 @@ class Board:
         board.next_turn = 'X'
         return board
 
+    def copy_board(self):
+
+        copied_board = Board()
+        copied_board.current_state = copy.deepcopy(self.current_state)
+        copied_board.next_turn = copy.deepcopy(self.next_turn)
+        copied_board.depth = copy.deepcopy(self.depth)
+        return copied_board
+
     def is_game_tie(self):
 
         count = 0
@@ -33,15 +38,53 @@ class Board:
             for j in range(0, 3):
                 if self.current_state[i][j] != '':
                     count += 1
-        if self.is_game_finished is None and count == 9:
-            self.is_game_finished = 0
+        if count == 9:
+            return True
+        return False
 
-    def is_full(self):
+    def is_there_a_winner(self):
+        """
+        Checks whether there is a winner in the current board situation. Returns true if there is a winner.
+
+        It checks all 8 possible lines (horizontal, vertical and diagonal ones).
+        :return:
+        """
+
+        # Check the horizontal lines (3 lines)
         for i in range(3):
+            s = set()
             for j in range(3):
-                if self.current_state[i][j] == '':
-                    return False
-        return True
+                s.add(self.current_state[i][j])
+            if len(s) == 1:
+                if '' not in s:
+                    return True
+
+        # Check the vertical lines (3 lines)
+        for j in range(3):
+            s = set()
+            for i in range(3):
+                s.add(self.current_state[i][j])
+            if len(s) == 1:
+                if '' not in s:
+                    return True
+
+        # Check the diagonal (the one from top-left to bottom-right)
+        s = set()
+        for i in range(3):
+            s.add(self.current_state[i][i])
+        if len(s) == 1:
+            if '' not in s:
+                return True
+
+        # Check the other diagonal (the one from top-right to bottom-left)
+        s = set()
+        for i in range(3):
+            s.add(self.current_state[i][2 - i])
+        if len(s) == 1:
+            if '' not in s:
+                return True
+
+        return False
 
     def alternate_turn(self):
         if self.next_turn == 'X':
@@ -177,6 +220,7 @@ class Board:
         return self.score
 
 
+'''
 initial_board = Board.get_initial_board()
 initial_board.make_move(2, 1)
 initial_board.make_move(1, 1)
@@ -190,26 +234,36 @@ initial_board.make_move(0, 0)
 initial_board.is_game_tie()
 print(initial_board.calculate_current_state_score())
 print(initial_board.is_game_finished)
+'''
 
 
 class Tree:
+
     def __init__(self):
         self.root = Board.get_initial_board()
+        self.depth = 0
 
     def generate_full_tree(self):
         self.create_children(self.root)
 
     def create_children(self, board):
 
-        if board.is_full() or board.is_game_over():
+        if board.is_game_tie() or board.is_there_a_winner():
             return
         else:
             for i in range(3):
                 for j in range(3):
                     if board.current_state[i][j] == '':
+
                         child = board.copy_board()
                         child.make_move(i, j)
-                        board.children.append(child)
                         child.parent = board
+                        child.depth = child.parent.depth + 1
+                        board.children.append(child)
 
                         self.create_children(child)
+
+
+t = Tree()
+t.generate_full_tree()
+print()
