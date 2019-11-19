@@ -49,16 +49,14 @@ class Board:
             for j in range(0, 3):
                 if self.current_state[i][j] != '':
                     count += 1
-        if count == 9:
-            return True
-        return False
+        return count == 9
 
     def is_there_a_winner(self):
         """
         Checks whether there is a winner in the current board situation. Returns true if there is a winner.
 
         It checks all 8 possible lines (horizontal, vertical and diagonal ones).
-        :return:
+        :return: True one of the players wins in the current state
         """
 
         # Check the horizontal lines (3 lines)
@@ -98,10 +96,7 @@ class Board:
         return False
 
     def alternate_turn(self):
-        if self.next_turn == 'X':
-            self.next_turn = 'O'
-        else:
-            self.next_turn = 'X'
+        self.next_turn = "O" if self.next_turn == "X" else "X"
 
     def make_move(self, row, col):
         if self.current_state[row][col] == '':
@@ -109,14 +104,6 @@ class Board:
             self.alternate_turn()
         else:
             print("Row:", row, ", Column: ", col, " is occupied.")
-
-    def print_virtual_values(self):
-        print("Virtual Values: ")
-        for i in range(len(self.children)):
-            if i == len(self.children) - 1:
-                print(self.children[i].virtual_value, end='')
-            else:
-                print(self.children[i].virtual_value, end=' -> ')
 
     def print_board(self):
         for i in range(0, 3):
@@ -131,12 +118,9 @@ class Board:
         print()
 
     def print_game_path(self):
-        if self.parent is None:
-            self.print_board()
-            return
-        self.parent.print_game_path()
+        if self.parent is not None:
+            self.parent.print_game_path()
         self.print_board()
-        return
 
     def calculate_current_state_score(self):
         x_score = 0
@@ -247,7 +231,6 @@ class Board:
 
     @staticmethod
     def play(node):
-
         # Print the board situation associated with the node
         print("." * 20)
         node.print_board()
@@ -273,8 +256,6 @@ class Board:
 
             input("(Press enter to go to the next state)")
             return Board.play(selected_child)
-
-
 
 class Tree:
     def __init__(self):
