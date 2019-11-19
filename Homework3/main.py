@@ -123,6 +123,18 @@ class Board:
         self.print_board()
 
     def calculate_current_state_score(self):
+        """
+        We use the following heuristic to assess a state:
+
+        +100 for each 3-in-a-line for X player.
+        +10 for each two-in-a-line for X player.
+        +1 for each one-in-a-line for X player.
+        Negative scores for O player (i.e., -100, -10, -1)
+        0 otherwise
+
+        Reference: https://www.ntu.edu.sg/home/ehchua/programming/java/JavaGame_TicTacToe_AI.html
+        Section 1.3
+        """
         x_score = 0
         o_score = 0
 

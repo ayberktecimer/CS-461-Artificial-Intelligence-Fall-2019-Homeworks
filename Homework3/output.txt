@@ -1,0 +1,79 @@
+Calculating the tree... This may take a few minutes...
+
+A game where both players make their best moves is given below:
+....................
+ _  _  _
+ _  _  _
+ _  _  _
+
+State Value: 36
+Child Values:18 18 18 18 36 36 36 36 36 
+(Press enter to go to the next state)   
+....................
+ _  _  _
+ _  X  _
+ _  _  _
+
+State Value: 36     
+Child Values:36 36 36 36 36 36 36 36
+(Press enter to go to the next state)
+....................
+ O  _  _
+ _  X  _
+ _  _  _
+
+State Value: 36
+Child Values:36 36 36 36 36 36 36
+(Press enter to go to the next state)
+....................
+ O  X  _
+ _  X  _ 
+ _  _  _
+
+State Value: 36
+Child Values:91 91 91 91 36 36
+(Press enter to go to the next state)
+....................
+ O  X  _
+ _  X  _
+ _  O  _
+
+State Value: 36
+Child Values:18 36 36 36 36
+(Press enter to go to the next state)
+....................
+ O  X  _
+ X  X  _
+ _  O  _
+
+State Value: 36
+Child Values:99 36 91 91
+(Press enter to go to the next state)
+....................
+ O  X  _
+State Value: 36
+Child Values:36 36 36
+(Press enter to go to the next state)
+....................
+ O  X  X
+ X  X  O
+ _  O  _
+
+State Value: 36
+Child Values:36 109
+(Press enter to go to the next state)
+....................
+ O  X  X
+ X  X  O
+ O  O  _
+
+State Value: 36
+Child Values:36
+(Press enter to go to the next state)
+....................
+ O  X  X
+ X  X  O
+ O  O  X
+
+State Value: 36
+Done
