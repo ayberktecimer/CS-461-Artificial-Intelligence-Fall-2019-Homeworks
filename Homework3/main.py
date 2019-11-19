@@ -1,4 +1,3 @@
-import math
 """
 CS461 Homework3
 Fall 2019
@@ -9,11 +8,12 @@ Emre Sülün 21502214
 Eray Şahin 21502758
 Kazım Ayberk Tecimer 21502531
 """
+
+import math
 import copy
 
 
 class Board:
-
     def __init__(self):
         self.current_state = None
         self.children = []
@@ -23,10 +23,9 @@ class Board:
         self.depth = 0
         self.alpha = - math.inf
         self.beta = math.inf
-        #self.virtual_value = None
+
     @staticmethod
     def get_initial_board():
-
         board = Board()
 
         board_state = [['', '', ''], ['', '', ''], ['', '', '']]
@@ -37,7 +36,6 @@ class Board:
         return board
 
     def copy_board(self):
-
         copied_board = Board()
         copied_board.current_state = copy.deepcopy(self.current_state)
         copied_board.next_turn = copy.deepcopy(self.next_turn)
@@ -45,7 +43,6 @@ class Board:
         return copied_board
 
     def is_game_tie(self):
-
         count = 0
         for i in range(0, 3):
             for j in range(0, 3):
@@ -119,6 +116,7 @@ class Board:
                 print(self.children[i].virtual_value, end='')
             else:
                 print(self.children[i].virtual_value, end=' -> ')
+
     def print_board(self):
         for i in range(0, 3):
             for j in range(0, 3):
@@ -128,10 +126,18 @@ class Board:
                     print(' X ', end='')
                 else:
                     print(' O ', end='')
-            print('')
+            print()
+        print()
+
+    def print_game_path(self):
+        if self.parent is None:
+            self.print_board()
+            return
+        self.parent.print_game_path()
+        self.print_board()
+        return
 
     def calculate_current_state_score(self):
-        # e30 a biner yan yan gider
         x_score = 0
         o_score = 0
 
@@ -143,14 +149,13 @@ class Board:
                     x_count += 1
                 elif self.current_state[i][j] == 'O':
                     o_count += 1
-                else:  # bos
+                else:
                     pass
             if x_count == 1:
                 x_score += 1
             elif x_count == 2:
                 x_score += 10
             if x_count == 3:
-                # ??????
                 x_score += 100
 
             if o_count == 1:
@@ -158,11 +163,8 @@ class Board:
             elif o_count == 2:
                 o_score += 10
             if o_count == 3:
-                # ??????
                 o_score += 100
 
-
-                ### dik dik gider
         for j in range(0, 3):
             x_count = 0
             o_count = 0
@@ -171,14 +173,13 @@ class Board:
                     x_count += 1
                 elif self.current_state[i][j] == 'O':
                     o_count += 1
-                else:  # bos
+                else:
                     pass
             if x_count == 1:
                 x_score += 1
             elif x_count == 2:
                 x_score += 10
             if x_count == 3:
-                # ??????
                 x_score += 100
 
             if o_count == 1:
@@ -186,11 +187,8 @@ class Board:
             elif o_count == 2:
                 o_score += 10
             if o_count == 3:
-                # ??????
                 o_score += 100
 
-
-                ## saga dogru capraz gider
         x_count = 0
         o_count = 0
         for i in range(0, len(self.current_state)):
@@ -198,14 +196,13 @@ class Board:
                 x_count += 1
             elif self.current_state[i][i] == 'O':
                 o_count += 1
-            else:  # bos
+            else:
                 pass
         if x_count == 1:
             x_score += 1
         elif x_count == 2:
             x_score += 10
         if x_count == 3:
-            # ??????
             x_score += 100
 
         if o_count == 1:
@@ -213,7 +210,6 @@ class Board:
         elif o_count == 2:
             o_score += 10
         if o_count == 3:
-            # ??????
 
             o_score += 100
 
@@ -228,14 +224,13 @@ class Board:
                 x_count += 1
             elif self.current_state[i][j] == 'O':
                 o_count += 1
-            else:  # bos
+            else:
                 pass
         if x_count == 1:
             x_score += 1
         elif x_count == 2:
             x_score += 10
         if x_count == 3:
-            # ??????
             x_score += 100
 
         if o_count == 1:
@@ -243,7 +238,6 @@ class Board:
         elif o_count == 2:
             o_score += 10
         if o_count == 3:
-            # ??????
             o_score += 100
 
         total_score = x_score - o_score
@@ -251,25 +245,7 @@ class Board:
         return self.virtual_value
 
 
-'''
-initial_board = Board.get_initial_board()
-initial_board.make_move(2, 1)
-initial_board.make_move(1, 1)
-initial_board.make_move(2, 2)
-initial_board.make_move(2, 0)
-initial_board.make_move(0, 2)
-initial_board.make_move(1, 2)
-initial_board.make_move(1, 0)
-initial_board.make_move(0, 1)
-initial_board.make_move(0, 0)
-initial_board.is_game_tie()
-print(initial_board.calculate_current_state_score())
-print(initial_board.is_game_finished)
-'''
-
-
 class Tree:
-
     def __init__(self):
         self.root = Board.get_initial_board()
         self.depth = 0
@@ -278,7 +254,6 @@ class Tree:
         self.create_children(self.root)
 
     def create_children(self, board):
-
         if board.is_game_tie() or board.is_there_a_winner():
             return
         else:
@@ -293,42 +268,43 @@ class Tree:
 
                         board.children.append(child)
                         self.create_children(child)
-'''
-CODE IS ADAPTED FROM http://web.mit.edu/dxh/www/adverse/index.html
-Alpha-Beta-search(node, maximizing?, α, β, α-node, β-node)
-    If α and β are undefined:
-        Set α = −∞ and β = +∞.
-    If node has children:
-        For each child child of node:
-            Set ⟨result_value, result_node⟩ = Alpha-Beta-search(child, not maximizing?, α, β, α-node, β-node)
-            If maximizing?:
-                If result_value > α:
-                    Set ⟨α, α-node⟩ = ⟨result_value, result_node⟩.
-            Else:
-                If result_value < β:
-                    Set ⟨β, β-node⟩ = ⟨result_value, result_node⟩.
-            If α ≥ β: // if node can be pruned
-                Exit the for loop early.
-        End For.
-        If maximizing?:
-            Return ⟨α, α-node⟩.
-        Else:
-            Return ⟨β, β-node⟩.
-    Else:
-        Return node and the static value of node.
-'''
 
 
 def alpha_beta(Board, alpha, beta, alpha_node, beta_node):
+    '''
+    CODE IS ADAPTED FROM http://web.mit.edu/dxh/www/adverse/index.html
+    Alpha-Beta-search(node, maximizing?, α, β, α-node, β-node)
+        If α and β are undefined:
+            Set α = −∞ and β = +∞.
+        If node has children:
+            For each child child of node:
+                Set ⟨result_value, result_node⟩ = Alpha-Beta-search(child, not maximizing?, α, β, α-node, β-node)
+                If maximizing?:
+                    If result_value > α:
+                        Set ⟨α, α-node⟩ = ⟨result_value, result_node⟩.
+                Else:
+                    If result_value < β:
+                        Set ⟨β, β-node⟩ = ⟨result_value, result_node⟩.
+                If α ≥ β: // if node can be pruned
+                    Exit the for loop early.
+            End For.
+            If maximizing?:
+                Return ⟨α, α-node⟩.
+            Else:
+                Return ⟨β, β-node⟩.
+        Else:
+            Return node and the static value of node.
+    '''
     depth = Board.depth
-    is_max_level = True if depth%2 == 0 else False
+    is_max_level = True if depth % 2 == 0 else False
     if alpha is None and beta is None:
-        alpha =  - math.inf
+        alpha = - math.inf
         beta = math.inf
     children = Board.children
-    if len(children) > 0 :
+    if len(children) > 0:
         for child in children:
-            result_value, result_node = alpha_beta(child, alpha, beta, alpha_node, beta_node)
+            result_value, result_node = alpha_beta(
+                child, alpha, beta, alpha_node, beta_node)
             if is_max_level:
                 if result_value > alpha:
                     alpha = result_value
@@ -343,29 +319,19 @@ def alpha_beta(Board, alpha, beta, alpha_node, beta_node):
                 break
         if is_max_level:
             Board.virtual_value = Board.alpha
-            return alpha,alpha_node
+            return alpha, alpha_node
         else:
             Board.virtual_value = Board.beta
-            return beta,beta_node
+            return beta, beta_node
     else:
         return Board.calculate_current_state_score(), Board
 
 
-t = Tree()
-print("Calculating the tree")
-t.generate_full_tree()
-result_score, result_state = alpha_beta(t.root, None, None, None, None)
+# Code starts from here
+tree = Tree()
+print("Calculating the tree... This may take a few minutes...")
+tree.generate_full_tree()
+result_score, result_state = alpha_beta(tree.root, None, None, None, None)
 
-
-def print_game_path(state):
-    if state.parent is None:
-        state.print_board()
-        return
-    print_game_path(state.parent)
-    state.print_board()
-    return
-
-
-print_game_path(result_state)
-t.root.print_virtual_values()
-print()
+result_state.print_game_path()
+tree.root.print_virtual_values()
