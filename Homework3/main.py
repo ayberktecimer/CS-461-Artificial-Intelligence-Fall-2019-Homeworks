@@ -23,6 +23,7 @@ class Board:
         self.depth = 0
         self.alpha = - math.inf
         self.beta = math.inf
+        self.is_leaf = False
 
     @staticmethod
     def get_initial_board():
@@ -244,6 +245,36 @@ class Board:
         self.virtual_value = total_score
         return self.virtual_value
 
+    @staticmethod
+    def play(node):
+
+        # Print the board situation associated with the node
+        print("." * 20)
+        node.print_board()
+
+        # Print the virtual value of the node
+        print("State Value:", node.virtual_value)
+
+        if node.is_leaf is False:
+
+            # Print the values of children
+            print("Child Values:", end='')
+            for child in node.children:
+                print(child.virtual_value, end=' ')
+            print()
+
+            # For the maximizing player, choose the child with the maximum value
+            if node.depth % 2 == 0:
+                selected_child = max(node.children, key=lambda item: item.virtual_value)
+
+            # For the minimizing player, choose the child with the minimum value
+            else:
+                selected_child = min(node.children, key=lambda item: item.virtual_value)
+
+            input("(Press enter to go to the next state)")
+            return Board.play(selected_child)
+
+
 
 class Tree:
     def __init__(self):
@@ -255,6 +286,7 @@ class Tree:
 
     def create_children(self, board):
         if board.is_game_tie() or board.is_there_a_winner():
+            board.is_leaf = True
             return
         else:
             for i in range(3):
@@ -333,5 +365,6 @@ print("Calculating the tree... This may take a few minutes...")
 tree.generate_full_tree()
 result_score, result_state = alpha_beta(tree.root, None, None, None, None)
 
-result_state.print_game_path()
-tree.root.print_virtual_values()
+print("\nA game where both players make their best moves is given below:")
+Board.play(tree.root)
+print("Done")
