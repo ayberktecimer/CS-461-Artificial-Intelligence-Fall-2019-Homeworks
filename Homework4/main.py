@@ -10,7 +10,7 @@ Kazım Ayberk Tecimer 21502531
 """
 import copy
 
-# The first example as a adjacency list
+# The first example as an adjacency list
 example1_graph = {
     "CAIVehicle": ["CPuppet"],
     "CPuppet": ["CPipeUser"],
@@ -21,7 +21,7 @@ example1_graph = {
     "Everything": []
 }
 
-# The second example as a adjacency list
+# The second example as an adjacency list
 example2_graph = {
     "fstream": ["iostream"],
     "iostream": ["istream", "ostream"],
@@ -33,7 +33,7 @@ example2_graph = {
     "Everything": []
 }
 
-# The third example as a adjacency list
+# The third example as an adjacency list
 example3_graph = {
     "Consultant Manager": ["Consultant", "Manager"],
     "Director": ["Manager"],
