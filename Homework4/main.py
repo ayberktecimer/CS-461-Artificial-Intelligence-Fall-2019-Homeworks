@@ -44,32 +44,65 @@ example3_graph = {
     "Everything": []
 }
 
+
 def compute_class_precedence(graph, initial_node):
+    '''
+    Class precedence list code is adapted from Winston Chapter 9 pg.197
+    To compute an instance's class-precedence list
+    Create fish-hook pairs
+    Until all the fish-hook pairs are eliminated:
+        Find the exposed classes
+        Select the exposed class that is a direct superclass of the lowest-precedence class on the emerging class-precedence list
+        Add the selected class to the emerging class-precedence list
+        Strike all fish-hook pairs that contain the newly added class
+    '''
+    # Create fish-hook pairs
     fish_hook_pairs = create_fish_hook_pairs(graph, initial_node)
+
+    # Define a predence list (initially empty)
     precedence_list = []
+
+    # Count the number of fish-hook pairs
     fish_hook_pairs_len = calculate_dict_length(fish_hook_pairs)
+
+    # Get the list of all possible names (e.g. ["Crazy", "Professors", "Eccentrics", ...])
     class_list = list(fish_hook_pairs.keys())
-    # until all the fish-hook pairs are eliminated
+
+    # Until all the fish-hook pairs are eliminated
     while fish_hook_pairs_len > 0:
+
+        # Find the exposed classes
         exposed_class_list = find_exposed_classes(fish_hook_pairs, class_list)
+
+        # If there are more than one class to expose, select the one that is a direct superclass of the lowest-precedence class on the emerging class-precedence list
         new_exposed_class = select_exposed_class(exposed_class_list, precedence_list, graph)
+
+        # Append the selected (exposed) class to the end of the precedence list
         precedence_list.append(new_exposed_class)
+
+        # Strike the fish-hook pairs which include the exposed class
         strike_fish_hook_pairs(fish_hook_pairs, new_exposed_class)
         class_list.remove(new_exposed_class)
+
+        # Get the number of fish-hook pairs, again
         fish_hook_pairs_len = calculate_dict_length(fish_hook_pairs)
+
     return precedence_list
 
-# strike all fish-hook pairs that contain the newly added class
+# Strike all fish-hook pairs that contain the newly added class
 def strike_fish_hook_pairs(fish_hook_pairs, class_instance):
+
     for key in fish_hook_pairs.keys():
         value_list = fish_hook_pairs[key]
         new_value_list = []
+        # Maintain only those pairs which do not include "class_instance"
         for value in value_list:
             if not value[0] == class_instance:
                 new_value_list.append(value)
+        # Update the fish-hook pairs (the pairs containing the exposed class are removed)
         fish_hook_pairs[key] = new_value_list
 
-        
+# Return the number of fish-hook pairs
 def calculate_dict_length(dict):
     dict_len = 0
     for key, value in dict.items():
@@ -77,10 +110,9 @@ def calculate_dict_length(dict):
     return dict_len
 
 
-# find the exposed classes
+# Find the exposed classes
 def find_exposed_classes(fish_hook_pairs,class_list):
     class_list_temp = copy.deepcopy(class_list)
-    #class_list = list(fish_hook_pairs.keys())
     for key, value_list in fish_hook_pairs.items():
         for value in value_list:
             if value[1] in class_list_temp:
@@ -88,11 +120,14 @@ def find_exposed_classes(fish_hook_pairs,class_list):
     return class_list_temp
 
 
-# select the exposed class that is a direct superclass of the lowest-recedence class on the emerging class-precedence list.
+# Select the exposed class that is a direct superclass of the lowest-precedence class on the emerging class-precedence list.
 def select_exposed_class(exposed_class_list, precedence_list, graph):
+    # If there is one option, then that class is the one to expose
     if len(exposed_class_list) == 1:
         return exposed_class_list[0]
+    # When there are multiple classes that can be exposed, select the one which is a direct superclass of the lowest-precedence class
     else:
+        # Traverse the precedence list, starting with the lowest-precedence
         p_list_value = len(precedence_list)
         while p_list_value > 0:
             for class_instance in exposed_class_list:
@@ -126,14 +161,15 @@ def create_fish_hook_pairs(graph, node):
     pairs['Everything'] = []
     return pairs
 
-    
-def is_direct_superclass(class_instance,graph,lowest_precedence_class):
+# Checks whether a node is a direct superclass of another one
+def is_direct_superclass(class_instance, graph, lowest_precedence_class):
     superclasses = graph[lowest_precedence_class]
     if class_instance in superclasses:
         return True
     else:
         return False
 
+# Code starts from here
 print('\nResults for Example 1: ')
 print('\nInitial Node is CAIVehicle')
 print(' -> '.join(compute_class_precedence(example1_graph,'CAIVehicle')))
