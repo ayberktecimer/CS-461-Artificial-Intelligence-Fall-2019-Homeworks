@@ -17,6 +17,23 @@ graph = {
     'Teachers': ['Dwarfs'],
     'Programmers': ['Dwarfs'],
     'Dwarfs': ['Everything'],
+    "Jacque": ["Weightlifters", "Shotputters", "Athletes"],
+    "Weightlifters": ["Athletes", "Endomorphs"],
+    "Shotputters": ["Athletes", "Endomorphs"],
+    "Athletes": ["Dwarfs"],
+    "Endomorphs": ["Dwarfs"],
+    "Everything": []
+}
+
+example3Graph = {
+    "Consultant Manager": ["Consultant", "Manager"],
+    "Director": ["Manager"],
+    "Permanent Manager": ["Manager", "Permanent Employee"],
+    "Consultant": ["Temporary Employee"],
+    "Manager": ["Employee"],
+    "Permanent Employee": ["Employee"],
+    "Temporary Employee": ["Employee"],
+    "Employee": ["Everything"],
     "Everything": []
 }
 
