@@ -10,7 +10,7 @@ Kazım Ayberk Tecimer 21502531
 """
 import copy
 
-
+# The first example as a adjacency list
 example1_graph = {
     "CAIVehicle": ["CPuppet"],
     "CPuppet": ["CPipeUser"],
@@ -21,6 +21,7 @@ example1_graph = {
     "Everything": []
 }
 
+# The second example as a adjacency list
 example2_graph = {
     "fstream": ["iostream"],
     "iostream": ["istream", "ostream"],
@@ -32,6 +33,7 @@ example2_graph = {
     "Everything": []
 }
 
+# The third example as a adjacency list
 example3_graph = {
     "Consultant Manager": ["Consultant", "Manager"],
     "Director": ["Manager"],
@@ -102,25 +104,33 @@ def select_exposed_class(exposed_class_list, precedence_list, graph):
             p_list_value -= 1
         
 def create_fish_hook_pairs(graph, node):
-    pairs = {}
-    queue = []
-    visited = set([])
+    """ This function creates fish hook pairs for a given graph adjacency list
+    and initial node by following the parents of target node
+    """
+    pairs = {} # Fish hook pairs that will be returned
+    queue = [] # Queue of nodes that will be processed
+    visited = set([]) # Mark nodes as visited to avoid unnecessary processing
 
     queue.append(node)
     while len(queue) != 0:
         targetNode = queue[0]
         combinedList = [targetNode] + graph[targetNode]
+
+        # Add parents of the target node to queue
         for parent in graph[targetNode]:
             if parent not in visited:
                 queue.append(parent)
                 visited.add(parent)
         
+        # Create fish hook pairs of the target node
         for i, value in enumerate(combinedList):
             if i != len(combinedList) - 1:
                 if targetNode in pairs:
                     pairs[targetNode].append((value, combinedList[i+1]))    
                 else:
                     pairs[targetNode] = [(value, combinedList[i+1])]
+
+        # Remove processed node from queue
         del queue[0]
     
     pairs['Everything'] = []
