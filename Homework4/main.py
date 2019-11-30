@@ -37,6 +37,29 @@ example3Graph = {
     "Everything": []
 }
 
+example1_graph = {
+    "CAIVehicle": ["CPuppet"],
+    "CPuppet": ["CPipeUser"],
+    "CAIPlayer": ["CAIActor"],
+    "CPipeUser": ["CAIActor"],
+    "CAIActor": ["CAIObject"],
+    "CAIObject": ["Everything"],
+    "Everything": []
+
+}
+
+example2_graph = {
+    "fstream": ["iostream"],
+    "iostream": ["istream", "ostream"],
+    "ifstream": ["istream"],
+    "ofstream": ["ostream"],
+    "istream": ["ios"],
+    "ostream": ["ios"],
+    "ios": ["Everything"],
+    "Everything": []
+    
+}
+
 def get_reachable_path():
     return -1
 
@@ -60,11 +83,7 @@ def create_fish_hook_pairs(node):
                     pairs[targetNode].append((value, combinedList[i+1]))    
                 else:
                     pairs[targetNode] = [(value, combinedList[i+1])]
-
-
         del queue[0]
-    
-    print("Pairs", pairs)
 
 def print_topological_sort(initial_node,graph):
     pass
