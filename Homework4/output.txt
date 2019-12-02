@@ -1,0 +1,29 @@
+Results for Example 1:    
+
+Initial Node is CAIVehicle
+CAIVehicle -> CPuppet -> CPipeUser -> CAIActor -> CAIObject
+
+Initial Node is CAIPlayer
+CAIPlayer -> CAIActor -> CAIObject
+
+Results for Example 2:
+
+Initial Node is ifstream
+ifstream -> istream -> ios
+
+Initial Node is fstream
+fstream -> iostream -> istream -> ostream -> ios
+
+Initial Node is ofstream
+ofstream -> ostream -> ios
+
+Results for Example 3:
+
+Initial Node is Consultant Manager
+Consultant Manager -> Consultant -> Temporary Employee -> Manager -> Employee
+
+Initial Node is Director
+Director -> Manager -> Employee
+
+Initial Node is Permanent Manager
+Permanent Manager -> Manager -> Permanent Employee -> Employee
